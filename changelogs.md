@@ -1,3 +1,32 @@
+# 4.0.0.3
+
+- **Added** `ZAUCTIONHOUSE_SELL_LIMIT` button - displays remaining sell slots visually using a list of inventory slots, configurable per item type (auction, bid, rent)
+- **Added** `%zauctionhouse_max_items_<type>%` placeholder - returns the maximum number of items a player can list for a specific type (auction, bid, rent)
+- **Fixed** default config values
+- **Fixed** default table prefix to `zauctionhousev4` (fixes compatibility with zAuctionHouse V3)
+
+### `ZAUCTIONHOUSE_SELL_LIMIT` button
+
+```yaml
+sell-limit:
+  type: ZAUCTIONHOUSE_SELL_LIMIT
+  types:
+    - auction
+  slots:
+    - 0-9
+  item:
+    material: LIME_STAINED_GLASS_PANE
+    name: '&aAvailable slot'
+```
+
+### `%zauctionhouse_max_items_<type>%` placeholder
+
+Returns the maximum number of items a player can list based on their permissions for the given type.
+
+- `%zauctionhouse_max_items_auction%`
+- `%zauctionhouse_max_items_bid%`
+- `%zauctionhouse_max_items_rent%`
+
 # 4.0.0.2
 
 - **Added** `zauctionhouse_category` permissible for zMenu - allows conditional button visibility based on the player's currently selected category (defaults to `main`)
