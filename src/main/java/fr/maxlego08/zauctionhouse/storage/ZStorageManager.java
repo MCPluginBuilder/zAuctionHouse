@@ -58,7 +58,7 @@ public class ZStorageManager extends ItemLoaderUtils implements StorageManager {
             this.plugin.getLogger().info("The database connection is valid !");
         }
 
-        MigrationManager.setMigrationTableName("zauctionhouse_migrations");
+        MigrationManager.setMigrationTableName("zauctionhousev4_migrations");
         MigrationManager.setDatabaseConfiguration(databaseConfiguration);
 
         MigrationManager.registerMigration(new CreatePlayerMigration());
