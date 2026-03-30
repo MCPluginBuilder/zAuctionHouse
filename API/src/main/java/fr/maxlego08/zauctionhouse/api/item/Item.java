@@ -3,6 +3,7 @@ package fr.maxlego08.zauctionhouse.api.item;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.zauctionhouse.api.category.Category;
 import fr.maxlego08.zauctionhouse.api.economy.AuctionEconomy;
+import fr.maxlego08.zauctionhouse.api.economy.PriceFormat;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -122,6 +123,11 @@ public interface Item {
      * @return price formatted using the associated economy
      */
     String getFormattedPrice();
+
+    /**
+     * @return price formatted using the specified format
+     */
+    String getFormattedPrice(PriceFormat priceFormat);
 
     /**
      * @return formatted expiration date string respecting the plugin's date format

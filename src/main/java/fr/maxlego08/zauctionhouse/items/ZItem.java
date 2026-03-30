@@ -4,6 +4,7 @@ import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.category.Category;
 import fr.maxlego08.zauctionhouse.api.economy.AuctionEconomy;
+import fr.maxlego08.zauctionhouse.api.economy.PriceFormat;
 import fr.maxlego08.zauctionhouse.api.item.Item;
 import fr.maxlego08.zauctionhouse.api.item.ItemStatus;
 import fr.maxlego08.zauctionhouse.utils.PerformanceDebug;
@@ -23,10 +24,9 @@ public abstract class ZItem implements Item {
     protected final String sellerName;
     protected final BigDecimal price;
     protected final String economyName;
-    protected AuctionEconomy auctionEconomy;
     protected final Date createdAt;
     protected final PerformanceDebug performanceDebug;
-
+    protected AuctionEconomy auctionEconomy;
     protected Date expiredAt;
     protected ItemStatus itemStatus = ItemStatus.AVAILABLE;
     protected UUID buyerUniqueId;
@@ -111,6 +111,9 @@ public abstract class ZItem implements Item {
             placeholders.register("seller", this.getSellerName());
             placeholders.register("status", this.createStatus(player));
             placeholders.register("price", getFormattedPrice());
+            for (PriceFormat priceFormat : PriceFormat.values()) {
+                placeholders.register("price-" + priceFormat.name().toLowerCase().replace("_", "-"), getFormattedPrice(priceFormat));
+            }
             placeholders.register("time-remaining", this.getRemainingTime());
             placeholders.register("formatted-expire-date", this.getFormattedExpireDate());
             return placeholders;
@@ -130,6 +133,11 @@ public abstract class ZItem implements Item {
     @Override
     public String getFormattedPrice() {
         return this.plugin.getEconomyManager().format(this.auctionEconomy, this.price);
+    }
+
+    @Override
+    public String getFormattedPrice(PriceFormat priceFormat) {
+        return this.plugin.getEconomyManager().format(priceFormat, this.price);
     }
 
     @Override
