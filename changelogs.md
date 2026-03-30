@@ -1,7 +1,8 @@
-# 4.0.0.3
+# 4.0.0.3 (unreleased)
 
 - **Added** `ZAUCTIONHOUSE_SELL_LIMIT` button - displays remaining sell slots visually using a list of inventory slots, configurable per item type (auction, bid, rent)
 - **Added** `%zauctionhouse_max_items_<type>%` placeholder - returns the maximum number of items a player can list for a specific type (auction, bid, rent)
+- **Fixed** `/ah history` stuck on "Loading..." when `action.purchased-item.give-item: true` is enabled
 - **Fixed** default config values
 - **Fixed** default table prefix to `zauctionhousev4` (fixes compatibility with zAuctionHouse V3)
 
