@@ -20,7 +20,9 @@ import fr.maxlego08.zauctionhouse.api.storage.StorageManager;
 import fr.maxlego08.zauctionhouse.api.utils.Plugins;
 import fr.maxlego08.zauctionhouse.category.ZCategoryManager;
 import fr.maxlego08.zauctionhouse.cluster.LocalAuctionClusterBridge;
-import fr.maxlego08.zauctionhouse.command.CommandManager;
+import fr.maxlego08.zauctionhouse.api.command.CommandManager;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
+import fr.maxlego08.zauctionhouse.command.ZCommandManager;
 import fr.maxlego08.zauctionhouse.command.commands.CommandAuction;
 import fr.maxlego08.zauctionhouse.configuration.MainConfiguration;
 import fr.maxlego08.zauctionhouse.discord.DiscordWebhookService;
@@ -66,7 +68,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private final StorageManager storageManager = new ZStorageManager(this);
     private final Configuration configuration = new MainConfiguration(this);
     private final ConfigurationFile messageLoader = new MessageLoader(this);
-    private final CommandManager commandManager = new CommandManager(this);
+    private final ZCommandManager commandManager = new ZCommandManager(this);
     private final AuctionManager auctionManager = new ZAuctionManager(this);
     private final EconomyManager economyManager = new ZEconomyManager(this);
     private final ExecutorService asyncExecutor = Executors.newFixedThreadPool(4);
@@ -314,8 +316,22 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
         return this.auctionManager;
     }
 
+    @Override
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    private final MessageHelper messageHelper = new MessageHelper();
+
+    @Override
+    public void sendMessage(org.bukkit.command.CommandSender sender, Message message, Object... args) {
+        messageHelper.send(this, sender, message, args);
+    }
+
+    private static class MessageHelper extends fr.maxlego08.zauctionhouse.utils.MessageUtils {
+        void send(AuctionPlugin plugin, org.bukkit.command.CommandSender sender, Message message, Object... args) {
+            this.message(plugin, sender, message, args);
+        }
     }
 
     @Override

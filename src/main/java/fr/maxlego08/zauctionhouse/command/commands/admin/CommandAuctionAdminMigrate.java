@@ -6,8 +6,8 @@ import fr.maxlego08.zauctionhouse.api.migration.MigrationCallback;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationResult;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

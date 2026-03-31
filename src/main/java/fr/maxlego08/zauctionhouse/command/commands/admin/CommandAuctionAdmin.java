@@ -3,9 +3,9 @@ package fr.maxlego08.zauctionhouse.command.commands.admin;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.command.commands.admin.cache.CommandAuctionAdminCache;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
 
 public class CommandAuctionAdmin extends VCommand {
 

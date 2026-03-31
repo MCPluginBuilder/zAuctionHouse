@@ -2,15 +2,18 @@ package fr.maxlego08.zauctionhouse.api;
 
 import com.tcoded.folialib.impl.PlatformScheduler;
 import fr.maxlego08.zauctionhouse.api.cluster.AuctionClusterBridge;
+import fr.maxlego08.zauctionhouse.api.command.CommandManager;
 import fr.maxlego08.zauctionhouse.api.configuration.Configuration;
 import fr.maxlego08.zauctionhouse.api.economy.EconomyManager;
 import fr.maxlego08.zauctionhouse.api.hooks.permission.OfflinePermission;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationRegistry;
 import fr.maxlego08.zauctionhouse.api.placeholders.Placeholder;
 import fr.maxlego08.zauctionhouse.api.category.CategoryManager;
 import fr.maxlego08.zauctionhouse.api.rules.ItemRuleManager;
 import fr.maxlego08.zauctionhouse.api.rules.loader.RuleLoaderRegistry;
 import fr.maxlego08.zauctionhouse.api.storage.StorageManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.ExecutorService;
@@ -47,6 +50,20 @@ public interface AuctionPlugin extends Plugin {
      * @return central manager orchestrating auction logic and player interactions
      */
     AuctionManager getAuctionManager();
+
+    /**
+     * @return command manager for registering and resolving commands
+     */
+    CommandManager getCommandManager();
+
+    /**
+     * Sends a formatted message to a command sender, resolving placeholders and message types.
+     *
+     * @param sender  the recipient
+     * @param message the message enum entry
+     * @param args    placeholder key-value pairs (must be even-length)
+     */
+    void sendMessage(CommandSender sender, Message message, Object... args);
 
     /**
      * @return loader capable of registering and opening inventory-based menus

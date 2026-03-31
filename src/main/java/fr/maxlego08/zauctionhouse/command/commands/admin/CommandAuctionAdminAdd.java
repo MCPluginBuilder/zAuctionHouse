@@ -8,9 +8,10 @@ import fr.maxlego08.zauctionhouse.api.item.StorageType;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.item.ItemType;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -78,6 +79,16 @@ public class CommandAuctionAdminAdd extends VCommand {
         }
 
         return CommandType.SUCCESS;
+    }
+
+    private void removeItemInHand(Player player, int how) {
+        var inventory = player.getInventory();
+        if (inventory.getItemInMainHand().getAmount() > how) {
+            inventory.getItemInMainHand().setAmount(inventory.getItemInMainHand().getAmount() - how);
+        } else {
+            inventory.setItemInMainHand(new ItemStack(Material.AIR));
+        }
+        player.updateInventory();
     }
 
     private void addListed(Player target, ItemStack cloned, BigDecimal price, AuctionEconomy economy, Player admin) {

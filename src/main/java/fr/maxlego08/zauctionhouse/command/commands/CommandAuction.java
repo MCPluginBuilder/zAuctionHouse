@@ -3,10 +3,9 @@ package fr.maxlego08.zauctionhouse.command.commands;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.command.commands.admin.CommandAuctionAdmin;
-import fr.maxlego08.zauctionhouse.command.commands.admin.CommandAuctionAdminReload;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
 import org.bukkit.entity.Player;
 
 public class CommandAuction extends VCommand {

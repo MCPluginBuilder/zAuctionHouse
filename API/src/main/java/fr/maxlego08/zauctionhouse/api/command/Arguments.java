@@ -1,6 +1,5 @@
-package fr.maxlego08.zauctionhouse.utils.commands;
+package fr.maxlego08.zauctionhouse.api.command;
 
-import fr.maxlego08.zauctionhouse.utils.ZUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -9,9 +8,8 @@ import org.bukkit.entity.Player;
 
 /**
  * Abstract class providing utility methods for parsing command arguments.
- * Extends {@link ZUtils}.
  */
-public abstract class Arguments extends ZUtils {
+public abstract class Arguments {
 
     protected String[] args;
     protected int parentCount = 0;

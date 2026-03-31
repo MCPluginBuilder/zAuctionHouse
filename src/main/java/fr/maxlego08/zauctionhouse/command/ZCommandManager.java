@@ -1,26 +1,23 @@
 package fr.maxlego08.zauctionhouse.command;
 
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
+import fr.maxlego08.zauctionhouse.api.command.CommandManager;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.utils.ZUtils;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class CommandManager extends ZUtils implements CommandExecutor, TabCompleter {
+public class ZCommandManager extends ZUtils implements CommandManager, CommandExecutor, TabCompleter {
 
     private static CommandMap commandMap;
     private static Constructor<? extends PluginCommand> constructor;
@@ -39,7 +36,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
     private final AuctionPlugin plugin;
     private final List<VCommand> commands = new ArrayList<VCommand>();
 
-    public CommandManager(AuctionPlugin template) {
+    public ZCommandManager(AuctionPlugin template) {
         this.plugin = template;
     }
 
@@ -49,6 +46,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
      * @param command the command to register
      * @return the command
      */
+    @Override
     public VCommand registerCommand(VCommand command) {
         this.commands.add(command);
         return command;
@@ -130,7 +128,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
 
         if (command.getPermission() == null || hasPermission(sender, command.getPermission())) {
 
-            if (command.runAsync) {
+            if (command.isRunAsync()) {
                 this.plugin.getScheduler().runAsync(w -> {
                     CommandType returnType = command.prePerform(this.plugin, sender, strings);
                     if (returnType == CommandType.SYNTAX_ERROR) {
@@ -150,6 +148,7 @@ public class CommandManager extends ZUtils implements CommandExecutor, TabComple
         return CommandType.DEFAULT;
     }
 
+    @Override
     public List<VCommand> getCommands() {
         return this.commands;
     }
