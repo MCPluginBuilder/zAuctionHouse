@@ -81,6 +81,15 @@ public class SellService extends ZUtils implements AuctionSellService {
 
             // Return to main thread to verify items and remove them
             this.plugin.getScheduler().runNextTick(task -> {
+
+                if (!player.isOnline()) {
+                    if (taxResult.hasTax()) {
+                        auctionEconomy.deposit(player.getUniqueId(), taxResult.taxAmount(), "Refund sell tax (items changed)");
+                    }
+                    resultFuture.complete(SellResult.failure("Player disconnected", SellFailReason.PLAYER_DISCONNECTED));
+                    return;
+                }
+
                 // Re-verify that items are still in their original slots after async tax check
                 if (!verifyItemsInSlots(player, validSlotItems)) {
                     message(this.plugin, player, Message.SELL_ERROR_CHANGE);
