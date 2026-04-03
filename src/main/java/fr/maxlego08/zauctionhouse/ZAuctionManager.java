@@ -91,7 +91,6 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
     @Override
     public void openMainAuction(Player player, int page) {
-        var inventoriesLoader = this.plugin.getInventoriesLoader();
         var cache = getCache(player);
 
         // Reset category filter if configured
@@ -106,6 +105,13 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             cache.remove(PlayerCacheKey.ITEMS_SEARCH);
             cache.remove(PlayerCacheKey.ITEMS_LISTED);
         }
+
+        openAuctionInventory(player, page);
+    }
+
+    private void openAuctionInventory(Player player, int page) {
+        var inventoriesLoader = this.plugin.getInventoriesLoader();
+        var cache = getCache(player);
 
         // Check if player's cache is already ready (fast path)
         boolean playerCacheReady = cache.has(PlayerCacheKey.ITEMS_LISTED);
@@ -981,7 +987,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
         message(player, Message.SEARCH_SEARCHING, "%query%", query);
 
-        openMainAuction(player);
+        openAuctionInventory(player, 1);
     }
 
     @Override

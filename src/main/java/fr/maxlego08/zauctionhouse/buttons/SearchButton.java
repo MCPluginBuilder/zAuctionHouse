@@ -40,6 +40,17 @@ public class SearchButton extends Button {
     public void onClick(@NonNull Player player, @NonNull InventoryClickEvent event, @NonNull InventoryEngine inventory, int slot, @NonNull Placeholders placeholders) {
         super.onClick(player, event, inventory, slot, placeholders);
 
+        var cache = this.plugin.getAuctionManager().getCache(player);
+        String query = cache.get(PlayerCacheKey.SEARCH_QUERY);
+
+        if (event.isRightClick()) {
+            if (query != null && !query.isEmpty()) {
+                this.plugin.getAuctionManager().clearSearch(player);
+                this.plugin.getAuctionManager().openMainAuction(player);
+            }
+            return;
+        }
+
         if (this.plugin instanceof ZAuctionPlugin zAuctionPlugin) {
             zAuctionPlugin.getChatSearchListener().startSearch(player);
         }
