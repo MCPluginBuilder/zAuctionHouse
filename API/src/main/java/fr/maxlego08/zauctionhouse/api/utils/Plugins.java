@@ -33,7 +33,8 @@ public enum Plugins {
     DENIZEN("Denizen"),
     ADVANCEDITEMS("AdvancedItems"),
     CUSTOMCRAFTING("CustomCrafting"),
-    ECOITEMS("EcoItems")
+    ECOITEMS("EcoItems"),
+    ZELAUCTION("ZelAuction")
     ;
 
 	private final String name;

@@ -739,6 +739,10 @@ action:
   # Cuando esta desactivado, la categoria seleccionada anteriormente persiste entre aperturas.
   reset-category-on-open: true
 
+  # Cuando esta activado, el filtro de busqueda se restablece cada vez que un jugador abre la casa de subastas.
+  # Cuando esta desactivado, la busqueda ingresada anteriormente persiste entre aperturas.
+  reset-search-on-open: true
+
   # Comportamiento durante la retirada de un objeto de los anuncios activos (el vendedor cancela la venta)
   remove-listed-item:
     # Si es true, el objeto se da inmediatamente al inventario del jugador

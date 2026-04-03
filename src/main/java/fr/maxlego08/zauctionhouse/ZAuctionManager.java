@@ -100,6 +100,13 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             cache.remove(PlayerCacheKey.ITEMS_LISTED);
         }
 
+        // Reset search filter if configured
+        if (this.plugin.getConfiguration().getActions().resetSearchOnOpen() && cache.has(PlayerCacheKey.SEARCH_QUERY)) {
+            cache.remove(PlayerCacheKey.SEARCH_QUERY);
+            cache.remove(PlayerCacheKey.ITEMS_SEARCH);
+            cache.remove(PlayerCacheKey.ITEMS_LISTED);
+        }
+
         // Check if player's cache is already ready (fast path)
         boolean playerCacheReady = cache.has(PlayerCacheKey.ITEMS_LISTED);
         boolean globalCacheReady = !sortedItemsCache.isDirty();

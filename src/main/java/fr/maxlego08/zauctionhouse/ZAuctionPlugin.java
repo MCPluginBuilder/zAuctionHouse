@@ -34,6 +34,7 @@ import fr.maxlego08.zauctionhouse.loader.MessageLoader;
 import fr.maxlego08.zauctionhouse.search.ChatSearchListener;
 import fr.maxlego08.zauctionhouse.loader.ZInventoriesLoader;
 import fr.maxlego08.zauctionhouse.migration.ZMigrationRegistry;
+import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.migration.v3.V3MigrationProvider;
 import fr.maxlego08.zauctionhouse.placeholder.DistantPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.LocalPlaceholder;
@@ -298,6 +299,27 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
     private void registerDefaultMigrationProviders() {
         this.migrationRegistry.register(new V3MigrationProvider());
+        this.registerOptionalMigrationProvider("fr.maxlego08.zauctionhouse.hooks.zelauction.ZelAuctionMigrationProvider", "ZelAuction");
+    }
+
+    /**
+     * Registers a migration provider using reflection.
+     * Used for optional hooks that may not be included in the build.
+     *
+     * @param className   The fully qualified class name
+     * @param displayName The display name for logging
+     */
+    private void registerOptionalMigrationProvider(String className, String displayName) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            MigrationProvider provider = (MigrationProvider) clazz.getDeclaredConstructor().newInstance();
+            this.migrationRegistry.register(provider);
+            this.getLogger().info(displayName + " migration provider registered.");
+        } catch (ClassNotFoundException ignored) {
+            // Hook not included in build, skip silently
+        } catch (Exception exception) {
+            this.getLogger().warning("Failed to register " + displayName + " migration provider: " + exception.getMessage());
+        }
     }
 
     @Override

@@ -46,9 +46,11 @@ public class CommandAuctionAdminMigrate extends VCommand {
         MigrationProvider provider = providerOptional.get();
 
         // Check if migration is configured for this source
-        ConfigurationSection migrationSection = plugin.getConfig().getConfigurationSection("migration." + provider.getConfigSection());
+        ConfigurationSection migrationSection = provider.getConfigSection() != null
+                ? plugin.getConfig().getConfigurationSection("migration." + provider.getConfigSection())
+                : null;
 
-        if (migrationSection == null) {
+        if (migrationSection == null && provider.getConfigSection() != null) {
             message(plugin, sender, Message.MIGRATION_NOT_CONFIGURED, "%source%", provider.getDisplayName());
             return CommandType.SUCCESS;
         }

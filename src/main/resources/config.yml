@@ -734,6 +734,10 @@ action:
   # When disabled, the previously selected category persists between opens.
   reset-category-on-open: true
 
+  # When enabled, the search filter is reset every time a player opens the auction house.
+  # When disabled, the previously entered search query persists between opens.
+  reset-search-on-open: true
+
   # Behavior when removing an item from active listings (seller cancels their sale)
   remove-listed-item:
     # If true, the item is immediately given to the player's inventory
@@ -921,6 +925,7 @@ sort-items:
 #
 # SUPPORTED SOURCES:
 #   - zauctionhousev3 (aliases: zah, zahv3, v3)
+#   - zelauction (aliases: zel, zelauctions) - requires ZelAuction plugin running + hook enabled
 #
 # WARNING: Always backup your data before migrating! Migration cannot be undone.
 
