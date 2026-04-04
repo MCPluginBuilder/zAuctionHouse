@@ -1,4 +1,4 @@
-group = "Hooks:ZelAuction"
+group = "Hooks.ZelAuction"
 
 dependencies {
     compileOnly(projects.api)

@@ -1,4 +1,4 @@
-group = "Hooks:HeadDatabase"
+group = "Hooks.HeadDatabase"
 
 repositories {
     mavenCentral()

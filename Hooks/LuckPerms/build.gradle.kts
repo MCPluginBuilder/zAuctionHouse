@@ -1,4 +1,4 @@
-group = "Hooks:LuckPerms"
+group = "Hooks.LuckPerms"
 
 dependencies {
     compileOnly(projects.api)

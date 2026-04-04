@@ -1,4 +1,4 @@
-group = "Hooks:Oraxen"
+group = "Hooks.Oraxen"
 
 repositories {
     maven {

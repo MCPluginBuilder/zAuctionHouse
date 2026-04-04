@@ -1,4 +1,4 @@
-group = "Hooks:ExecutableItems"
+group = "Hooks.ExecutableItems"
 
 repositories {
     exclusiveContent {

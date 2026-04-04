@@ -97,6 +97,11 @@ public class ZStorageManager extends ItemLoaderUtils implements StorageManager {
         return this.repositories.getTable(module);
     }
 
+    @Override
+    public DatabaseConnection getDatabaseConnection() {
+        return this.databaseConnection;
+    }
+
     protected void async(Runnable runnable) {
         this.plugin.getScheduler().runAsync(wrappedTask -> runnable.run());
     }

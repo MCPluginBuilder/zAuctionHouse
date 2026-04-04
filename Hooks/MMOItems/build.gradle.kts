@@ -1,4 +1,4 @@
-group = "Hooks:MMOItems"
+group = "Hooks.MMOItems"
 
 repositories {
     maven {

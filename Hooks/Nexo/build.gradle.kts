@@ -1,4 +1,4 @@
-group = "Hooks:Nexo"
+group = "Hooks.Nexo"
 
 repositories {
     maven {

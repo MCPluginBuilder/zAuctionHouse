@@ -1,5 +1,6 @@
 package fr.maxlego08.zauctionhouse.api.storage;
 
+import fr.maxlego08.sarah.DatabaseConnection;
 import fr.maxlego08.zauctionhouse.api.economy.AuctionEconomy;
 import fr.maxlego08.zauctionhouse.api.item.Item;
 import fr.maxlego08.zauctionhouse.api.item.StorageType;
@@ -93,6 +94,13 @@ public interface StorageManager {
      * @return repository instance
      */
     <T extends Repository> T with(Class<T> module);
+
+    /**
+     * Gets the underlying database connection used by the storage manager.
+     *
+     * @return the database connection
+     */
+    DatabaseConnection getDatabaseConnection();
 
     /**
      * Updates the stored representation of the given item in the specified storage bucket.

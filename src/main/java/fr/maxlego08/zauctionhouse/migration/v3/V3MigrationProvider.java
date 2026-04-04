@@ -123,7 +123,7 @@ public class V3MigrationProvider implements MigrationProvider {
             case JSON -> service.migrateFromJson(migrationConfig.getJsonFolder());
         };
 
-        return migrationFuture.thenApply(result -> (MigrationResult) MigrationResult.success(
+        return migrationFuture.thenApply(result -> MigrationResult.success(
                 result.getPlayersImported(),
                 result.getItemsImported(),
                 result.getTransactionsImported(),
