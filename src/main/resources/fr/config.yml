@@ -916,6 +916,28 @@ sort-items:
     DECREASING_DATE: "ᴅᴀᴛᴇ ᴅᴇᴄʀᴏɪssᴀɴᴛᴇ"   # Plus récent d'abord
     DECREASING_PRICE: "ᴘʀɪx ᴅᴇᴄʀᴏɪssᴀɴᴛ"  # Plus cher d'abord
 
+#=============================================================================
+# CONFIGURATION DES FILTRES DE RECHERCHE
+#=============================================================================
+
+# Configure les opérateurs de filtres de recherche utilisés dans le système de recherche.
+# Chaque type de filtre correspond à un opérateur que les joueurs tapent dans la barre de recherche.
+#
+# Exemple : "seller = Notch", "name ~ Diamond", "material ~= sword"
+#
+# ATTENTION : Les opérateurs doivent être uniques. Évitez les opérateurs qui sont des préfixes d'autres
+# (ex: "=" et "==" fonctionnent car les opérateurs plus longs sont vérifiés en premier).
+
+search-filters:
+  # Contient (sensible à la casse) : champ ~ valeur
+  CONTAINS: "~"
+  # Correspondance exacte (sensible à la casse) : champ = valeur
+  EQUALS: "="
+  # Contient (insensible à la casse) : champ ~= valeur
+  CONTAINS_IGNORE_CASE: "~="
+  # Correspondance exacte (insensible à la casse) : champ == valeur
+  EQUALS_IGNORE_CASE: "=="
+
 ################################################################################################################################
 # MIGRATION DEPUIS D'AUTRES PLUGINS
 ################################################################################################################################

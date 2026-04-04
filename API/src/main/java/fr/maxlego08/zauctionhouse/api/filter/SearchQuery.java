@@ -1,5 +1,9 @@
 package fr.maxlego08.zauctionhouse.api.filter;
 
+import fr.maxlego08.zauctionhouse.api.configuration.records.SearchFilterConfiguration;
+
+import java.util.Map;
+
 /**
  * Represents a parsed search query with an optional field and filter type.
  * <p>
@@ -21,29 +25,27 @@ package fr.maxlego08.zauctionhouse.api.filter;
 public record SearchQuery(SearchField field, SearchFilterType type, String value) {
 
     /**
-     * Parses a raw query string into a {@link SearchQuery}.
-     * <p>
-     * The format is: {@code field <operator> value} (spaces around operator are optional).
-     * If no operator is found, the entire string is treated as a default search value.
+     * Parses a raw query string into a {@link SearchQuery} using configured operators.
      *
-     * @param raw the raw query string
+     * @param raw    the raw query string
+     * @param config the search filter configuration containing operator mappings
      * @return the parsed search query
      */
-    public static SearchQuery parse(String raw) {
+    public static SearchQuery parse(String raw, SearchFilterConfiguration config) {
         if (raw == null || raw.isEmpty()) {
             return new SearchQuery(null, null, "");
         }
 
         // Try each operator, longest first to avoid "==" being matched as "="
-        for (SearchFilterType filterType : SearchFilterType.orderedByLength()) {
-            String operator = filterType.getOperator();
+        for (Map.Entry<SearchFilterType, String> entry : config.orderedByLength()) {
+            String operator = entry.getValue();
             int index = raw.indexOf(operator);
             if (index > 0) {
                 String fieldKey = raw.substring(0, index).trim();
                 SearchField field = SearchField.fromKey(fieldKey);
                 if (field != null) {
                     String value = raw.substring(index + operator.length()).trim();
-                    return new SearchQuery(field, filterType, value);
+                    return new SearchQuery(field, entry.getKey(), value);
                 }
             }
         }

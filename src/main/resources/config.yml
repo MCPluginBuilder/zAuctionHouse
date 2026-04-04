@@ -912,6 +912,28 @@ sort-items:
     DECREASING_DATE: "ᴅᴇᴄʀᴇᴀsɪɴɢ ᴅᴀᴛᴇ"    # Newest first
     DECREASING_PRICE: "ᴅᴇᴄʀᴇᴀsɪɴɢ ᴘʀɪᴄᴇ"  # Most expensive first
 
+#=============================================================================
+# SEARCH FILTERS CONFIGURATION
+#=============================================================================
+
+# Configures the search filter operators used in the search system.
+# Each filter type maps to an operator string that players type in the search bar.
+#
+# Example usage: "seller = Notch", "name ~ Diamond", "material ~= sword"
+#
+# WARNING: Operators must be unique. Avoid operators that are prefixes of others
+# (e.g., "=" and "==" are fine because longer operators are matched first).
+
+search-filters:
+  # Contains (case-sensitive): field ~ value
+  CONTAINS: "~"
+  # Exact match (case-sensitive): field = value
+  EQUALS: "="
+  # Contains (ignore case): field ~= value
+  CONTAINS_IGNORE_CASE: "~="
+  # Exact match (ignore case): field == value
+  EQUALS_IGNORE_CASE: "=="
+
 ################################################################################################################################
 # MIGRATION FROM OTHER PLUGINS
 ################################################################################################################################

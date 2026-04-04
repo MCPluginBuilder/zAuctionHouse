@@ -37,7 +37,7 @@ public class SearchService {
      */
     public IntList search(SortedItemsCache sortedItemsCache, String query, SortItem sort, Category category) {
 
-        SearchQuery parsedQuery = SearchQuery.parse(query);
+        SearchQuery parsedQuery = SearchQuery.parse(query, this.plugin.getConfiguration().getSearchFilter());
         if (parsedQuery.value().isEmpty()) {
             return sortedItemsCache.getSortedIds(category, sort);
         }
