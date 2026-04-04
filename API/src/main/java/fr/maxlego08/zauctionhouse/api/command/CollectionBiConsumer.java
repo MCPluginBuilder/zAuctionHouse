@@ -1,4 +1,4 @@
-package fr.maxlego08.zauctionhouse.utils.commands;
+package fr.maxlego08.zauctionhouse.api.command;
 
 import org.bukkit.command.CommandSender;
 

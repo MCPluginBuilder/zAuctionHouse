@@ -59,7 +59,7 @@ public class VersionChecker extends ZUtils implements Listener {
             long plVersion = Long.parseLong(pluginVersion.replace(".", ""));
             atomicBoolean.set(plVersion >= ver);
             this.useLastVersion = atomicBoolean.get();
-            this.lastVersion = pluginVersion;
+            this.lastVersion = version;
 
             if (this.useLastVersion) {
 

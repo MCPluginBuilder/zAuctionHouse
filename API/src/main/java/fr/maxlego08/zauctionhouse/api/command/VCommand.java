@@ -1,16 +1,12 @@
-package fr.maxlego08.zauctionhouse.command;
+package fr.maxlego08.zauctionhouse.api.command;
 
-import fr.maxlego08.zauctionhouse.ZAuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.AuctionManager;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.utils.commands.Arguments;
-import fr.maxlego08.zauctionhouse.utils.commands.CollectionBiConsumer;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
-import fr.maxlego08.zauctionhouse.utils.commands.Tab;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,14 +17,14 @@ import java.util.Optional;
 
 public abstract class VCommand extends Arguments {
 
-    protected final ZAuctionPlugin plugin;
+    protected final AuctionPlugin plugin;
     protected final AuctionManager auctionManager;
     private final List<String> subCommands = new ArrayList<>();
     private final List<String> requireArgs = new ArrayList<>();
     private final List<String> optionalArgs = new ArrayList<>();
     protected VCommand parent;
     protected List<VCommand> subVCommands = new ArrayList<>();
-    protected boolean runAsync = false;
+    private boolean runAsync = false;
     protected CommandSender sender;
     protected Player player;
     protected Map<Integer, CollectionBiConsumer> tabCompletions = new HashMap<>();
@@ -45,9 +41,36 @@ public abstract class VCommand extends Arguments {
 
     public VCommand(AuctionPlugin plugin) {
         super();
-        this.plugin = (ZAuctionPlugin) plugin;
+        this.plugin = plugin;
         this.auctionManager = plugin.getAuctionManager();
     }
+
+    // -- Message helpers --
+
+    /**
+     * Sends a message to a command sender using the plugin's message system.
+     *
+     * @param plugin  the plugin instance
+     * @param sender  the recipient
+     * @param message the message enum
+     * @param args    placeholder key-value pairs
+     */
+    protected void message(AuctionPlugin plugin, CommandSender sender, Message message, Object... args) {
+        plugin.sendMessage(sender, message, args);
+    }
+
+    /**
+     * Checks if a permissible entity has a specific permission.
+     *
+     * @param permissible the entity to check
+     * @param permission  the permission string
+     * @return true if the entity has the permission
+     */
+    protected boolean hasPermission(Permissible permissible, String permission) {
+        return permissible.hasPermission(permission);
+    }
+
+    // -- Getters / Setters --
 
     public Optional<CollectionBiConsumer> getCompletionAt(int index) {
         return Optional.ofNullable(this.tabCompletions.getOrDefault(index, null));
@@ -275,6 +298,26 @@ public abstract class VCommand extends Arguments {
      */
     public void setExtendedArgs(boolean extendedArgs) {
         this.extendedArgs = extendedArgs;
+    }
+
+    /**
+     * Checks if the command should run asynchronously.
+     *
+     * @return true if the command should run asynchronously.
+     */
+    public boolean isRunAsync() {
+        return runAsync;
+    }
+
+    /**
+     * Sets whether the command should run asynchronously.
+     *
+     * @param runAsync true to run asynchronously.
+     * @return this VCommand instance.
+     */
+    protected VCommand setRunAsync(boolean runAsync) {
+        this.runAsync = runAsync;
+        return this;
     }
 
     /**

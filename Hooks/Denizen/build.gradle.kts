@@ -1,4 +1,4 @@
-group = "Hooks:Denizen"
+group = "Hooks.Denizen"
 
 repositories {
     maven {

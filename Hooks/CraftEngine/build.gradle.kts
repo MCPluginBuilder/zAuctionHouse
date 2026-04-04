@@ -1,4 +1,4 @@
-group = "Hooks:CraftEngine"
+group = "Hooks.CraftEngine"
 
 repositories {
     maven {

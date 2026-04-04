@@ -10,6 +10,7 @@ import java.io.File;
 public record ActionConfiguration(
                 boolean updateInventoryOnAction,
         boolean resetCategoryOnOpen,
+        boolean resetSearchOnOpen,
         // Listed
         ListedConfiguration listed,
         // Purchased
@@ -23,6 +24,7 @@ public record ActionConfiguration(
         return new ActionConfiguration(
                 configuration.getBoolean("action.update-inventory-on-action"),
                 configuration.getBoolean("action.reset-category-on-open", true),
+                configuration.getBoolean("action.reset-search-on-open", true),
                 // Listed
                 ListedConfiguration.of(plugin, configuration),
                 // Purchased

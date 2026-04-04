@@ -1,4 +1,4 @@
-group = "Hooks:ExecutableBlocks"
+group = "Hooks.ExecutableBlocks"
 
 repositories {
     maven {

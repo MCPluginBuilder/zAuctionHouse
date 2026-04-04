@@ -1,4 +1,4 @@
-group = "Hooks:Nova"
+group = "Hooks.Nova"
 
 repositories {
     maven {

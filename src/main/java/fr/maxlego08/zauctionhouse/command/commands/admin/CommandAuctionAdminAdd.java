@@ -8,9 +8,10 @@ import fr.maxlego08.zauctionhouse.api.item.StorageType;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.item.ItemType;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -80,6 +81,16 @@ public class CommandAuctionAdminAdd extends VCommand {
         return CommandType.SUCCESS;
     }
 
+    private void removeItemInHand(Player player, int how) {
+        var inventory = player.getInventory();
+        if (inventory.getItemInMainHand().getAmount() > how) {
+            inventory.getItemInMainHand().setAmount(inventory.getItemInMainHand().getAmount() - how);
+        } else {
+            inventory.setItemInMainHand(new ItemStack(Material.AIR));
+        }
+        player.updateInventory();
+    }
+
     private void addListed(Player target, ItemStack cloned, BigDecimal price, AuctionEconomy economy, Player admin) {
         long expiredAt = plugin.getConfiguration().getSellExpiration().getExpiration(target);
         expiredAt = expiredAt > 0 ? System.currentTimeMillis() + (expiredAt * 1000) : 0;
@@ -87,7 +98,7 @@ public class CommandAuctionAdminAdd extends VCommand {
         this.plugin.getStorageManager().createAuctionItem(target, price, expiredAt, List.of(cloned), economy)
                 .thenAccept(item -> {
                     this.auctionManager.addItem(StorageType.LISTED, item);
-                    this.auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_SELLING);
+                    this.auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_SEARCH);
                     this.auctionManager.updateListedItems(item, true, target);
                     this.auctionManager.message(admin, Message.ADMIN_ITEM_ADDED, "%items%", item.getItemDisplay(), "%target%", target.getName(), "%type%", "listed");
                 });

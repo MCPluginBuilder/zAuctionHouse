@@ -1,4 +1,4 @@
-group = "Hooks:ItemsAdder"
+group = "Hooks.ItemsAdder"
 
 repositories {
     maven {

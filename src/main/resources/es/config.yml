@@ -130,7 +130,7 @@ database-configuration:
   # Util para compartir una BD con otros plugins y evitar conflictos de nombres.
   # ATENCION: No cambiar despues de que el plugin haya almacenado datos, de lo contrario se perderan.
   # Tablas creadas por defecto: {prefix}items, {prefix}auction_items, {prefix}players, etc.
-  table-prefix: zauctionhouse_
+  table-prefix: zauctionhousev4_
 
   # Direccion IP o hostname del servidor de base de datos.
   # Usa 'localhost' o '127.0.0.1' si la BD esta en la misma maquina.
@@ -259,6 +259,19 @@ commands:
       - claim
       - c
       - reclamar   # Espanol
+
+  # Comando buscar: /zauctionhouse search <consulta>
+  # Busca objetos en la casa de subastas por texto.
+  search:
+    aliases:
+      - search
+      - s
+      - buscar        # Espanol
+    arguments:
+      - name: query
+        display-name: consulta
+        required: true
+        auto-completion: []
 
   # Comando page: /zauctionhouse page <numero>
   # Abre la casa de subastas directamente en una pagina especifica.
@@ -731,6 +744,10 @@ action:
   # Cuando esta desactivado, la categoria seleccionada anteriormente persiste entre aperturas.
   reset-category-on-open: true
 
+  # Cuando esta activado, el filtro de busqueda se restablece cada vez que un jugador abre la casa de subastas.
+  # Cuando esta desactivado, la busqueda ingresada anteriormente persiste entre aperturas.
+  reset-search-on-open: true
+
   # Comportamiento durante la retirada de un objeto de los anuncios activos (el vendedor cancela la venta)
   remove-listed-item:
     # Si es true, el objeto se da inmediatamente al inventario del jugador
@@ -904,6 +921,28 @@ sort-items:
     ASCENDING_DATE: "ꜰᴇᴄʜᴀ ᴄʀᴇᴄɪᴇɴᴛᴇ"       # Mas antiguo primero
     DECREASING_DATE: "ꜰᴇᴄʜᴀ ᴅᴇᴄʀᴇᴄɪᴇɴᴛᴇ"     # Mas reciente primero
     DECREASING_PRICE: "ᴘʀᴇᴄɪᴏ ᴅᴇᴄʀᴇᴄɪᴇɴᴛᴇ"   # Mas caro primero
+
+#=============================================================================
+# CONFIGURACION DE FILTROS DE BUSQUEDA
+#=============================================================================
+
+# Configura los operadores de filtros de busqueda usados en el sistema de busqueda.
+# Cada tipo de filtro corresponde a un operador que los jugadores escriben en la barra de busqueda.
+#
+# Ejemplo: "seller = Notch", "name ~ Diamond", "material ~= sword"
+#
+# ADVERTENCIA: Los operadores deben ser unicos. Evita operadores que sean prefijos de otros
+# (ej: "=" y "==" funcionan porque los operadores mas largos se verifican primero).
+
+search-filters:
+  # Contiene (sensible a mayusculas): campo ~ valor
+  CONTAINS: "~"
+  # Coincidencia exacta (sensible a mayusculas): campo = valor
+  EQUALS: "="
+  # Contiene (sin distinguir mayusculas): campo ~= valor
+  CONTAINS_IGNORE_CASE: "~="
+  # Coincidencia exacta (sin distinguir mayusculas): campo == valor
+  EQUALS_IGNORE_CASE: "=="
 
 ################################################################################################################################
 # MIGRACION DESDE OTROS PLUGINS

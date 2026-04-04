@@ -37,6 +37,7 @@ public enum Message {
     COMMAND_DESCRIPTION_AUCTION_ADMIN("Open administrative tools for auctions"),
     COMMAND_DESCRIPTION_AUCTION_ADMIN_GENERATE("Generate fake items"),
     COMMAND_DESCRIPTION_AUCTION_ADMIN_OPEN("Open current auction items"),
+    COMMAND_DESCRIPTION_AUCTION_ADMIN_FORCEOPEN("Open any inventory for a player"),
     COMMAND_DESCRIPTION_AUCTION_ADMIN_HISTORY("Open player auction history"),
     COMMAND_DESCRIPTION_AUCTION_ADMIN_ADD("Add an item to the auction"),
 
@@ -59,6 +60,7 @@ public enum Message {
     ADMIN_TARGET_REQUIRED("<error>You must specify a valid target player."),
     ADMIN_TARGET_NOT_FOUND("<error>Unable to find the player <white>%target%<error>."),
     ADMIN_OPEN_INVENTORY("<success>Opening %type% items for <white>%target%<success>."),
+    ADMIN_FORCEOPEN_INVENTORY("<success>Opening inventory <white>%inventory%<success> for <white>%target%<success> at page <white>%page%<success>."),
     ADMIN_OPEN_HISTORY("<success>Opening history for <white>%target%<success>."),
     ADMIN_ITEM_REMOVED("<success>You removed <white>%items%<success> from <white>%target%<success>."),
     ADMIN_ITEM_ADDED("<success>You added <white>%items%<success> to <white>%target%<success> in <white>%type%<success>."),
@@ -150,7 +152,15 @@ public enum Message {
             "<gray>  Transactions: <white>%transactions%",
             "<gray>  Errors: <white>%errors%",
             "<gray>  Duration: <white>%duration%ms"),
-    MIGRATION_FAILED("<error>Migration failed: <white>%error%");
+    MIGRATION_FAILED("<error>Migration failed: <white>%error%"),
+
+    // Search messages
+    SEARCH_START("<#8a8a8a>Please type your search in the chat."),
+    SEARCH_CLEARED("<#8a8a8a>Search cleared."),
+    SEARCH_NO_RESULTS("<#8a8a8a>No items found for <#ffffff>%query%<#8a8a8a>."),
+    SEARCH_SEARCHING("<#8a8a8a>Searching for <#ffffff>%query%<#8a8a8a>..."),
+
+    COMMAND_DESCRIPTION_AUCTION_SEARCH("Search for items in the auction house");
 
     private AuctionPlugin plugin;
     private List<AuctionMessage> messages = new ArrayList<>();

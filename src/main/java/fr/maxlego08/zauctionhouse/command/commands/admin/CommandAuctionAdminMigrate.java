@@ -6,8 +6,8 @@ import fr.maxlego08.zauctionhouse.api.migration.MigrationCallback;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationResult;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -46,9 +46,11 @@ public class CommandAuctionAdminMigrate extends VCommand {
         MigrationProvider provider = providerOptional.get();
 
         // Check if migration is configured for this source
-        ConfigurationSection migrationSection = plugin.getConfig().getConfigurationSection("migration." + provider.getConfigSection());
+        ConfigurationSection migrationSection = provider.getConfigSection() != null
+                ? plugin.getConfig().getConfigurationSection("migration." + provider.getConfigSection())
+                : null;
 
-        if (migrationSection == null) {
+        if (migrationSection == null && provider.getConfigSection() != null) {
             message(plugin, sender, Message.MIGRATION_NOT_CONFIGURED, "%source%", provider.getDisplayName());
             return CommandType.SUCCESS;
         }

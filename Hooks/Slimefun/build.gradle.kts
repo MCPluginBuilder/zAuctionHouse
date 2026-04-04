@@ -1,4 +1,4 @@
-group = "Hooks:Slimefun"
+group = "Hooks.Slimefun"
 
 repositories {
     maven {

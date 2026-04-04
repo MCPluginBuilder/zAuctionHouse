@@ -1,4 +1,48 @@
-# 4.0.0.4 (unreleased)
+# 4.0.0.5 (unreleased)
+
+# 4.0.0.4 
+
+- **Added** ZelAuction migration - migrate data from ZelAuction plugin to zAuctionHouse V4 using `/ah admin migrate zelauction confirm`
+- **Added** Search system - players can search items by name, material, lore, or seller directly from the auction house GUI or via `/ah search <query>`
+- **Added** `ZAUCTIONHOUSE_SEARCH` button - opens a chat-based search input with support for advanced filter operators
+- **Added** `ZAUCTIONHOUSE_CLEAR_SEARCH` button - clears the active search filter, only visible when a search is active
+- **Added** `/ah search <query>` command - search items directly from chat without opening the GUI first
+- **Added** Advanced search filters with operators: `~` (contains), `=` (exact), `~=` (contains, ignore case), `==` (exact, ignore case)
+- **Added** Searchable fields: `name`, `material`, `lore`, `seller` (e.g., `seller = Notch`, `name ~ Diamond`)
+- **Added** `/ah admin forceopen <player> <inventory> [page]` - Open any inventory for a player at a specific page. Supports all inventory names (e.g., `auction`, `admin-selling-items`, `history`, `admin-logs`, etc.) with tab completion. Page defaults to 1
+- **Added** `reset-search-on-open` config option - When enabled (default: `true`), the search filter is cleared every time a player opens the auction house, matching the existing `reset-category-on-open` behavior
+
+### Search system
+
+Players can search for items in the auction house using the search button or the `/ah search` command. The default search checks item name, material, lore, and seller name (case-insensitive substring).
+
+**Advanced filters:**
+
+```
+field operator value
+```
+
+| Operator | Description |
+|----------|-------------|
+| `~` | Contains (case-sensitive) |
+| `=` | Exact match (case-sensitive) |
+| `~=` | Contains (ignore case) |
+| `==` | Exact match (ignore case) |
+
+| Field | Description |
+|-------|-------------|
+| `name` | Item display name |
+| `material` | Item material type |
+| `lore` | Item lore text |
+| `seller` | Seller player name |
+
+**Examples:**
+```
+seller = Notch
+name ~ Diamond
+material ~= sword
+lore ~ Sharpness
+```
 
 # 4.0.0.3
 

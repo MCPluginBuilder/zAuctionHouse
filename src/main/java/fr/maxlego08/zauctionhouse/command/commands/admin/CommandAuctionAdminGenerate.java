@@ -7,11 +7,11 @@ import fr.maxlego08.zauctionhouse.api.item.ItemType;
 import fr.maxlego08.zauctionhouse.api.item.StorageType;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.utils.Permission;
-import fr.maxlego08.zauctionhouse.command.VCommand;
+import fr.maxlego08.zauctionhouse.api.command.CommandType;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.storage.repository.repositories.AuctionItemRepository;
 import fr.maxlego08.zauctionhouse.storage.repository.repositories.ItemRepository;
 import fr.maxlego08.zauctionhouse.storage.repository.repositories.PlayerRepository;
-import fr.maxlego08.zauctionhouse.utils.commands.CommandType;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -223,7 +223,7 @@ public class CommandAuctionAdminGenerate extends VCommand {
                 long duration = endTime - startTime;
 
                 // Clear caches
-                auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED);
+                auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_SEARCH);
                 plugin.getCategoryManager().invalidateCategoryCountCache();
 
                 plugin.getScheduler().runNextTick(t -> message(plugin, commandSender, Message.ADMIN_GENERATE_COMPLETE, "%amount%", String.valueOf(created.get()), "%time%", String.valueOf(duration)));

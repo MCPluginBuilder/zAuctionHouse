@@ -88,6 +88,11 @@ public enum SellFailReason {
     /**
      * An internal error occurred during the sell process.
      */
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+
+    /**
+     * The player disconnected during the sell process.
+     */
+    PLAYER_DISCONNECTED
 
 }

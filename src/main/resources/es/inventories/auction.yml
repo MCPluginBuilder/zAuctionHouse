@@ -209,6 +209,37 @@ items:
           - "#ff3535No tienes objetos en venta."
 
   #---------------------------------------------------------------------------
+  # BOTON BUSCAR
+  #---------------------------------------------------------------------------
+  # Abre la entrada de busqueda por chat para filtrar objetos.
+
+  search:
+    type: ZAUCTIONHOUSE_SEARCH
+    slot: 47
+    is-permanent: true
+    item:
+      material: COMPASS
+      name: "#2CCED2<bold>ʙᴜsᴄᴀʀ"
+      lore:
+        - ""
+        - "#92ffffBusqueda actual#8c8c8c: #2CCED2%search_query%"
+        - ""
+        - "#92ffffFiltros#8c8c8c:"
+        - "#8c8c8c  name #76CDCD~ #8c8c8cvalor    #555555(contiene)"
+        - "#8c8c8c  name #76CDCD= #8c8c8cvalor    #555555(exacto)"
+        - "#8c8c8c  name #76CDCD~= #8c8c8cvalor   #555555(contiene, sin mayusculas)"
+        - "#8c8c8c  name #76CDCD== #8c8c8cvalor   #555555(exacto, sin mayusculas)"
+        - ""
+        - "#92ffffCampos#8c8c8c: #76CDCDname#8c8c8c, #76CDCDmaterial#8c8c8c, #76CDCDlore#8c8c8c, #76CDCDseller"
+        - ""
+        - "#92ffffEjemplos#8c8c8c:"
+        - "#8c8c8c  seller #76CDCD= #8c8c8cNotch"
+        - "#8c8c8c  name #76CDCD~ #8c8c8cDiamond"
+        - ""
+        - "#8c8c8c- #2CCED2Clic izquierdo #92ffffpara buscar"
+        - "#8c8c8c- #2CCED2Clic derecho #92ffffpara borrar la busqueda"
+
+  #---------------------------------------------------------------------------
   # BOTON ACTUALIZAR
   #---------------------------------------------------------------------------
   # Muestra informacion de la casa de subastas y actualiza la lista.

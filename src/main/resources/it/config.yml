@@ -130,7 +130,7 @@ database-configuration:
   # Utile per condividere un DB con altri plugin e evitare conflitti di nomi.
   # ATTENZIONE: Non cambiare dopo che il plugin ha memorizzato dati, altrimenti andranno persi.
   # Tabelle create per default: {prefix}items, {prefix}auction_items, {prefix}players, ecc.
-  table-prefix: zauctionhouse_
+  table-prefix: zauctionhousev4_
 
   # Indirizzo IP o hostname del server database.
   # Usa 'localhost' o '127.0.0.1' se il DB è sulla stessa macchina.
@@ -259,6 +259,19 @@ commands:
       - claim
       - c
       - riscuoti     # Italiano
+
+  # Comando cerca: /zauctionhouse search <ricerca>
+  # Cerca oggetti nella casa d'aste per testo.
+  search:
+    aliases:
+      - search
+      - s
+      - cerca          # Italiano
+    arguments:
+      - name: query
+        display-name: ricerca
+        required: true
+        auto-completion: []
 
   # Comando page: /zauctionhouse page <numero>
   # Apre la casa d'aste direttamente a una pagina specifica.
@@ -731,6 +744,10 @@ action:
   # Quando disattivato, la categoria selezionata in precedenza persiste tra le aperture.
   reset-category-on-open: true
 
+  # Quando attivato, il filtro di ricerca viene reimpostato ogni volta che un giocatore apre la casa d'aste.
+  # Quando disattivato, la ricerca inserita in precedenza persiste tra le aperture.
+  reset-search-on-open: true
+
   # Comportamento durante il ritiro di un oggetto dagli annunci attivi (il venditore annulla la vendita)
   remove-listed-item:
     # Se true, l'oggetto viene dato immediatamente all'inventario del giocatore
@@ -904,6 +921,28 @@ sort-items:
     ASCENDING_DATE: "ᴅᴀᴛᴀ ᴄʀᴇsᴄᴇɴᴛᴇ"       # Più vecchio prima
     DECREASING_DATE: "ᴅᴀᴛᴀ ᴅᴇᴄʀᴇsᴄᴇɴᴛᴇ"     # Più recente prima
     DECREASING_PRICE: "ᴘʀᴇᴢᴢᴏ ᴅᴇᴄʀᴇsᴄᴇɴᴛᴇ"   # Più costoso prima
+
+#=============================================================================
+# CONFIGURAZIONE DEI FILTRI DI RICERCA
+#=============================================================================
+
+# Configura gli operatori dei filtri di ricerca usati nel sistema di ricerca.
+# Ogni tipo di filtro corrisponde a un operatore che i giocatori digitano nella barra di ricerca.
+#
+# Esempio: "seller = Notch", "name ~ Diamond", "material ~= sword"
+#
+# ATTENZIONE: Gli operatori devono essere unici. Evita operatori che sono prefissi di altri
+# (es: "=" e "==" funzionano perché gli operatori più lunghi vengono verificati per primi).
+
+search-filters:
+  # Contiene (sensibile alle maiuscole): campo ~ valore
+  CONTAINS: "~"
+  # Corrispondenza esatta (sensibile alle maiuscole): campo = valore
+  EQUALS: "="
+  # Contiene (ignora maiuscole): campo ~= valore
+  CONTAINS_IGNORE_CASE: "~="
+  # Corrispondenza esatta (ignora maiuscole): campo == valore
+  EQUALS_IGNORE_CASE: "=="
 
 ################################################################################################################################
 # MIGRAZIONE DA ALTRI PLUGIN

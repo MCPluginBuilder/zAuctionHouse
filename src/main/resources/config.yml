@@ -260,6 +260,19 @@ commands:
       - c
       - recuperer    # French: "to recover"
 
+  # Search command: /zauctionhouse search <query>
+  # Searches for items in the auction house by text.
+  search:
+    aliases:
+      - search
+      - s
+      - rechercher   # French: "to search"
+    arguments:
+      - name: query
+        display-name: query
+        required: true
+        auto-completion: []
+
   # Page command: /zauctionhouse page <number>
   # Opens the auction house at a specific page directly.
   page:
@@ -726,6 +739,10 @@ action:
   # When disabled, the previously selected category persists between opens.
   reset-category-on-open: true
 
+  # When enabled, the search filter is reset every time a player opens the auction house.
+  # When disabled, the previously entered search query persists between opens.
+  reset-search-on-open: true
+
   # Behavior when removing an item from active listings (seller cancels their sale)
   remove-listed-item:
     # If true, the item is immediately given to the player's inventory
@@ -900,6 +917,28 @@ sort-items:
     DECREASING_DATE: "ᴅᴇᴄʀᴇᴀsɪɴɢ ᴅᴀᴛᴇ"    # Newest first
     DECREASING_PRICE: "ᴅᴇᴄʀᴇᴀsɪɴɢ ᴘʀɪᴄᴇ"  # Most expensive first
 
+#=============================================================================
+# SEARCH FILTERS CONFIGURATION
+#=============================================================================
+
+# Configures the search filter operators used in the search system.
+# Each filter type maps to an operator string that players type in the search bar.
+#
+# Example usage: "seller = Notch", "name ~ Diamond", "material ~= sword"
+#
+# WARNING: Operators must be unique. Avoid operators that are prefixes of others
+# (e.g., "=" and "==" are fine because longer operators are matched first).
+
+search-filters:
+  # Contains (case-sensitive): field ~ value
+  CONTAINS: "~"
+  # Exact match (case-sensitive): field = value
+  EQUALS: "="
+  # Contains (ignore case): field ~= value
+  CONTAINS_IGNORE_CASE: "~="
+  # Exact match (ignore case): field == value
+  EQUALS_IGNORE_CASE: "=="
+
 ################################################################################################################################
 # MIGRATION FROM OTHER PLUGINS
 ################################################################################################################################
@@ -913,6 +952,7 @@ sort-items:
 #
 # SUPPORTED SOURCES:
 #   - zauctionhousev3 (aliases: zah, zahv3, v3)
+#   - zelauction (aliases: zel, zelauctions) - requires ZelAuction plugin running + hook enabled
 #
 # WARNING: Always backup your data before migrating! Migration cannot be undone.
 

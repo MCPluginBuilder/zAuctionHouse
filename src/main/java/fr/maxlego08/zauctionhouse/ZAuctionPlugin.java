@@ -20,7 +20,9 @@ import fr.maxlego08.zauctionhouse.api.storage.StorageManager;
 import fr.maxlego08.zauctionhouse.api.utils.Plugins;
 import fr.maxlego08.zauctionhouse.category.ZCategoryManager;
 import fr.maxlego08.zauctionhouse.cluster.LocalAuctionClusterBridge;
-import fr.maxlego08.zauctionhouse.command.CommandManager;
+import fr.maxlego08.zauctionhouse.api.command.CommandManager;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
+import fr.maxlego08.zauctionhouse.command.ZCommandManager;
 import fr.maxlego08.zauctionhouse.command.commands.CommandAuction;
 import fr.maxlego08.zauctionhouse.configuration.MainConfiguration;
 import fr.maxlego08.zauctionhouse.discord.DiscordWebhookService;
@@ -29,8 +31,10 @@ import fr.maxlego08.zauctionhouse.hooks.permissions.EmptyOfflinePermission;
 import fr.maxlego08.zauctionhouse.hooks.permissions.LuckPermsOfflinePermission;
 import fr.maxlego08.zauctionhouse.listeners.PlayerListener;
 import fr.maxlego08.zauctionhouse.loader.MessageLoader;
+import fr.maxlego08.zauctionhouse.search.ChatSearchListener;
 import fr.maxlego08.zauctionhouse.loader.ZInventoriesLoader;
 import fr.maxlego08.zauctionhouse.migration.ZMigrationRegistry;
+import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.migration.v3.V3MigrationProvider;
 import fr.maxlego08.zauctionhouse.placeholder.DistantPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.LocalPlaceholder;
@@ -66,7 +70,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private final StorageManager storageManager = new ZStorageManager(this);
     private final Configuration configuration = new MainConfiguration(this);
     private final ConfigurationFile messageLoader = new MessageLoader(this);
-    private final CommandManager commandManager = new CommandManager(this);
+    private final ZCommandManager commandManager = new ZCommandManager(this);
     private final AuctionManager auctionManager = new ZAuctionManager(this);
     private final EconomyManager economyManager = new ZEconomyManager(this);
     private final ExecutorService asyncExecutor = Executors.newFixedThreadPool(4);
@@ -77,6 +81,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private final YamlUpdater yamlUpdater = new YamlUpdater(this);
     private final MigrationRegistry migrationRegistry = new ZMigrationRegistry(this);
     private InventoriesLoader inventoriesLoader;
+    private ChatSearchListener chatSearchListener;
     private DiscordWebhookService discordWebhookService;
     private VersionChecker versionChecker;
     private boolean isEnabled = false;
@@ -120,7 +125,9 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
         this.discordWebhookService = new DiscordWebhookService(this);
 
+        this.chatSearchListener = new ChatSearchListener(this);
         this.addListener(new PlayerListener(this));
+        this.addListener(this.chatSearchListener);
 
         java.util.List<String> aliases = new java.util.ArrayList<>(getConfig().getStringList("commands.main-command.aliases"));
         String primaryCommand;
@@ -292,6 +299,27 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
     private void registerDefaultMigrationProviders() {
         this.migrationRegistry.register(new V3MigrationProvider());
+        this.registerOptionalMigrationProvider("fr.maxlego08.zauctionhouse.hooks.zelauction.ZelAuctionMigrationProvider", "ZelAuction");
+    }
+
+    /**
+     * Registers a migration provider using reflection.
+     * Used for optional hooks that may not be included in the build.
+     *
+     * @param className   The fully qualified class name
+     * @param displayName The display name for logging
+     */
+    private void registerOptionalMigrationProvider(String className, String displayName) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            MigrationProvider provider = (MigrationProvider) clazz.getDeclaredConstructor().newInstance();
+            this.migrationRegistry.register(provider);
+            this.getLogger().info(displayName + " migration provider registered.");
+        } catch (ClassNotFoundException ignored) {
+            // Hook not included in build, skip silently
+        } catch (Exception exception) {
+            this.getLogger().warning("Failed to register " + displayName + " migration provider: " + exception.getMessage());
+        }
     }
 
     @Override
@@ -314,8 +342,22 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
         return this.auctionManager;
     }
 
+    @Override
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    private final MessageHelper messageHelper = new MessageHelper();
+
+    @Override
+    public void sendMessage(org.bukkit.command.CommandSender sender, Message message, Object... args) {
+        messageHelper.send(this, sender, message, args);
+    }
+
+    private static class MessageHelper extends fr.maxlego08.zauctionhouse.utils.MessageUtils {
+        void send(AuctionPlugin plugin, org.bukkit.command.CommandSender sender, Message message, Object... args) {
+            this.message(plugin, sender, message, args);
+        }
     }
 
     @Override
@@ -376,6 +418,10 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     @Override
     public Placeholder getPlaceholder() {
         return this.placeholder;
+    }
+
+    public ChatSearchListener getChatSearchListener() {
+        return this.chatSearchListener;
     }
 
     public DiscordWebhookService getDiscordWebhookService() {

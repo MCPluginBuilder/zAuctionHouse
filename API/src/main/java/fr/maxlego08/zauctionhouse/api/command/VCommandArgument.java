@@ -1,8 +1,7 @@
-package fr.maxlego08.zauctionhouse.command;
+package fr.maxlego08.zauctionhouse.api.command;
 
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.configuration.commands.CommandArgumentConfiguration;
-import fr.maxlego08.zauctionhouse.utils.commands.CollectionBiConsumer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 

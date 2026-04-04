@@ -1,7 +1,7 @@
 package fr.maxlego08.zauctionhouse.utils.documentation;
 
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
-import fr.maxlego08.zauctionhouse.command.VCommand;
+import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.placeholder.AutoPlaceholder;
 
 import java.io.File;

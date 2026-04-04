@@ -13,6 +13,7 @@ import fr.maxlego08.zauctionhouse.api.configuration.records.NumberMultiplication
 import fr.maxlego08.zauctionhouse.api.configuration.records.PerformanceConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.PerformanceDebugConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.PermissionConfiguration;
+import fr.maxlego08.zauctionhouse.api.configuration.records.SearchFilterConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SortConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SpecialItemsConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.TimeConfiguration;
@@ -194,6 +195,13 @@ public interface Configuration extends ConfigurationFile {
      * @return the performance configuration
      */
     PerformanceConfiguration getPerformance();
+
+    /**
+     * Gets the search filter configuration containing operator mappings.
+     *
+     * @return the search filter configuration
+     */
+    SearchFilterConfiguration getSearchFilter();
 
     /**
      * Checks if the sell inventory is enabled.

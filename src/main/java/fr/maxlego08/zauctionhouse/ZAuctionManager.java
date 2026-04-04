@@ -52,6 +52,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
     private final AuctionClaimService auctionClaimService;
     private final AuctionHistoryService auctionHistoryService;
     private final PerformanceDebug performanceDebug;
+    private final SearchService searchService;
 
     private final Map<Player, PlayerCache> caches = new ConcurrentHashMap<>();
     private final Map<StorageType, Map<Integer, Item>> storageItemsById = new EnumMap<>(StorageType.class);
@@ -69,6 +70,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         this.auctionClaimService = new ClaimService(plugin);
         this.auctionHistoryService = new HistoryService(plugin);
         this.performanceDebug = new PerformanceDebug(plugin);
+        this.searchService = new SearchService(plugin);
 
         for (StorageType value : StorageType.values()) {
             this.storageItemsById.put(value, new ConcurrentHashMap<>());
@@ -89,7 +91,6 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
     @Override
     public void openMainAuction(Player player, int page) {
-        var inventoriesLoader = this.plugin.getInventoriesLoader();
         var cache = getCache(player);
 
         // Reset category filter if configured
@@ -98,6 +99,20 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             cache.remove(PlayerCacheKey.ITEMS_LISTED);
         }
 
+        // Reset search filter if configured
+        if (this.plugin.getConfiguration().getActions().resetSearchOnOpen() && cache.has(PlayerCacheKey.SEARCH_QUERY)) {
+            cache.remove(PlayerCacheKey.SEARCH_QUERY);
+            cache.remove(PlayerCacheKey.ITEMS_SEARCH);
+            cache.remove(PlayerCacheKey.ITEMS_LISTED);
+        }
+
+        openAuctionInventory(player, page);
+    }
+
+    private void openAuctionInventory(Player player, int page) {
+        var inventoriesLoader = this.plugin.getInventoriesLoader();
+        var cache = getCache(player);
+
         // Check if player's cache is already ready (fast path)
         boolean playerCacheReady = cache.has(PlayerCacheKey.ITEMS_LISTED);
         boolean globalCacheReady = !sortedItemsCache.isDirty();
@@ -105,7 +120,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         if (playerCacheReady && globalCacheReady) {
             inventoriesLoader.openInventory(player, Inventories.AUCTION, page);
         } else {
-            // Cache needs preparation - do it async then open on main thread
+            // Cache needs preparation - do it async then open on the main thread
             prepareCacheAsync(player).thenRun(() -> {
                 this.plugin.getScheduler().runNextTick(w -> {
                     if (player.isOnline()) {
@@ -260,6 +275,14 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         var cache = getCache(player);
         var sort = cache.get(PlayerCacheKey.ITEM_SORT, this.plugin.getConfiguration().getSort().defaultSort());
         var category = cache.get(PlayerCacheKey.CURRENT_CATEGORY, (Category) null);
+
+        // If a search is active, use search results
+        String searchQuery = cache.get(PlayerCacheKey.SEARCH_QUERY);
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            IntList ids = cache.getOrCompute(PlayerCacheKey.ITEMS_SEARCH, () -> searchService.search(sortedItemsCache, searchQuery, sort, category));
+            performanceDebug.end("getItemIdsListedForSale[search]", startTime, "query=" + searchQuery + ", sort=" + sort + ", ids=" + ids.size());
+            return ids;
+        }
 
         // Use the global sorted items cache for O(1) access
         IntList ids = cache.getOrCompute(PlayerCacheKey.ITEMS_LISTED, () -> sortedItemsCache.getSortedIds(category, sort));
@@ -638,7 +661,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             removeItem(storageType, item);
 
             this.plugin.getStorageManager().updateItem(item, StorageType.DELETED);
-            clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_EXPIRED, PlayerCacheKey.ITEMS_PURCHASED, PlayerCacheKey.ITEMS_SELLING);
+            clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_EXPIRED, PlayerCacheKey.ITEMS_PURCHASED, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_SEARCH);
 
             giveItem(admin, item);
 
@@ -849,25 +872,29 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
         if (!added && ignoredPlayer != null) removeFromCache(ignoredPlayer, item);
 
-        this.plugin.getScheduler().runAsync(w -> {
-            for (Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
+        // Wait for the sorted cache to be rebuilt before updating inventories,
+        // otherwise players get stale data cached from a dirty sorted cache
+        this.sortedItemsCache.ensureCacheValidAsync().thenRun(() -> {
+            this.plugin.getScheduler().runAsync(w -> {
+                for (Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
 
-                if (onlinePlayer == ignoredPlayer) continue;
+                    if (onlinePlayer == ignoredPlayer) continue;
 
-                var topInventory = CompatibilityUtil.getTopInventory(onlinePlayer);
-                if (topInventory == null) continue;
+                    var topInventory = CompatibilityUtil.getTopInventory(onlinePlayer);
+                    if (topInventory == null) continue;
 
-                var holder = topInventory.getHolder();
-                if (holder instanceof InventoryEngine inventoryEngine) {
-                    var buttons = inventoryEngine.getMenuInventory().getButtons(ListedItemsButton.class);
-                    if (buttons.isEmpty()) continue;
+                    var holder = topInventory.getHolder();
+                    if (holder instanceof InventoryEngine inventoryEngine) {
+                        var buttons = inventoryEngine.getMenuInventory().getButtons(ListedItemsButton.class);
+                        if (buttons.isEmpty()) continue;
 
-                    var listedItemsButton = buttons.getFirst();
-                    listedItemsButton.updateInventory(onlinePlayer, inventoryEngine, item, added, this);
+                        var listedItemsButton = buttons.getFirst();
+                        listedItemsButton.updateInventory(onlinePlayer, inventoryEngine, item, added, this);
+                    }
+
+                    if (!added) removeFromCache(onlinePlayer, item);
                 }
-
-                if (!added) removeFromCache(onlinePlayer, item);
-            }
+            });
         });
     }
 
@@ -949,5 +976,34 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         if (this.sortedItemsCache != null) {
             this.sortedItemsCache.shutdown();
         }
+    }
+
+    @Override
+    public void startSearch(Player player, String query) {
+        String normalizedQuery = query == null ? null : query.trim();
+        if (normalizedQuery == null || normalizedQuery.isBlank()) {
+            clearSearch(player);
+            openAuctionInventory(player, 1);
+            return;
+        }
+
+        var cache = getCache(player);
+        cache.set(PlayerCacheKey.SEARCH_QUERY, normalizedQuery);
+        cache.remove(PlayerCacheKey.ITEMS_SEARCH);
+        cache.remove(PlayerCacheKey.ITEMS_LISTED);
+
+        message(player, Message.SEARCH_SEARCHING, "%query%", normalizedQuery);
+
+        openAuctionInventory(player, 1);
+    }
+
+    @Override
+    public void clearSearch(Player player) {
+        var cache = getCache(player);
+        cache.remove(PlayerCacheKey.SEARCH_QUERY);
+        cache.remove(PlayerCacheKey.ITEMS_SEARCH);
+        cache.remove(PlayerCacheKey.ITEMS_LISTED);
+
+        message(player, Message.SEARCH_CLEARED);
     }
 }
