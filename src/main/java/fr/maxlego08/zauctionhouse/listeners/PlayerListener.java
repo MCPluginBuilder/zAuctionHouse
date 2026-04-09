@@ -38,6 +38,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         this.plugin.getAuctionManager().removeCache(event.getPlayer());
+        this.plugin.getCommandManager().clearCooldowns(event.getPlayer().getUniqueId());
     }
 
 }

@@ -65,6 +65,16 @@ items:
       - 27-35   # Row 4
       - 36-44   # Row 5
 
+    # Slot where the empty indicator is shown when the shulker has no items.
+    empty-slot: 22
+
+    # Item displayed when the shulker box is empty.
+    item:
+      material: BARRIER
+      name: "#2CCED2<bold>ᴇᴍᴘᴛʏ sʜᴜʟᴋᴇʀ"
+      lore:
+        - "#92ffffThis shulker box does not contain any items."
+
   #---------------------------------------------------------------------------
   # SHULKER INFO DISPLAY
   #---------------------------------------------------------------------------

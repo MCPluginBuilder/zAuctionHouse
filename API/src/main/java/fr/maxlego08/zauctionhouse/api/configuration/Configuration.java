@@ -5,6 +5,7 @@ import fr.maxlego08.zauctionhouse.api.configuration.commands.InventoryCommandCon
 import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleCommandConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ActionConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.AutoClaimConfiguration;
+import fr.maxlego08.zauctionhouse.api.configuration.records.CooldownConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ExpirationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SalesNotificationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ItemDisplayConfiguration;
@@ -218,6 +219,13 @@ public interface Configuration extends ConfigurationFile {
      * @return list of inventory command configurations
      */
     List<InventoryCommandConfiguration> getInventoryCommands();
+
+    /**
+     * Gets the command cooldown configuration.
+     *
+     * @return the cooldown configuration
+     */
+    CooldownConfiguration getCooldown();
 
     /**
      * Loads a command configuration from the specified path.

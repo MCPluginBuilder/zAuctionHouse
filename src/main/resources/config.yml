@@ -332,6 +332,28 @@ commands:
         - 'history'
       inventory: HISTORY
 
+  # Command cooldown configuration
+  # Prevents players from spamming commands by enforcing a delay between executions.
+  # NOTE: These values ARE reloaded with /ah admin reload.
+  cooldown:
+
+    # Default cooldown in milliseconds applied to all commands.
+    # Set to 0 to disable the cooldown entirely.
+    # WARNING: It is strongly recommended to keep a cooldown (e.g., 100ms) to prevent command spam.
+    default-cooldown: 100
+
+    # Permission that allows a player to bypass the command cooldown.
+    bypass-permission: "zauctionhouse.cooldown.command.bypass"
+
+    # Per-command cooldown overrides (in milliseconds).
+    # Use the first alias of the command as the key.
+    # Commands not listed here will use the default-cooldown value.
+    # Examples:
+    #   sell: 500      # 500ms cooldown for /ah sell
+    #   claim: 1000    # 1 second cooldown for /ah claim
+    #   page: 50       # 50ms cooldown for /ah page
+    per-command: {}
+
 #=============================================================================
 # PRICE SHORTCUTS
 #=============================================================================

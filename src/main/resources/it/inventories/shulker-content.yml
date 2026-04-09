@@ -65,6 +65,16 @@ items:
       - 27-35   # Riga 4
       - 36-44   # Riga 5
 
+    # Slot in cui viene mostrato l'indicatore vuoto quando lo shulker non ha oggetti.
+    empty-slot: 22
+
+    # Oggetto visualizzato quando la scatola shulker è vuota.
+    item:
+      material: BARRIER
+      name: "#2CCED2<bold>sʜᴜʟᴋᴇʀ ᴠᴜᴏᴛᴏ"
+      lore:
+        - "#92ffffQuesta scatola shulker non contiene nessun oggetto."
+
   #---------------------------------------------------------------------------
   # VISUALIZZAZIONE INFO SHULKER
   #---------------------------------------------------------------------------

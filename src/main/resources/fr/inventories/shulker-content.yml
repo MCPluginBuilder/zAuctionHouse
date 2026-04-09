@@ -65,6 +65,16 @@ items:
       - 27-35   # Rangée 4
       - 36-44   # Rangée 5
 
+    # Slot où l'indicateur vide est affiché quand le shulker ne contient aucun item.
+    empty-slot: 22
+
+    # Item affiché quand la boîte shulker est vide.
+    item:
+      material: BARRIER
+      name: "#2CCED2<bold>sʜᴜʟᴋᴇʀ ᴠɪᴅᴇ"
+      lore:
+        - "#92ffffCette boîte shulker ne contient aucun item."
+
   #---------------------------------------------------------------------------
   # AFFICHAGE INFO SHULKER
   #---------------------------------------------------------------------------
