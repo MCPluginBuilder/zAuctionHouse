@@ -167,6 +167,42 @@ public class ClaimService extends AuctionService implements AuctionClaimService 
         });
     }
 
+    @Override
+    public CompletableFuture<Void> clearPendingTransactions(UUID playerUniqueId, boolean giveMoney) {
+        return getPendingTransactions(playerUniqueId).thenAccept(transactions -> {
+            if (transactions.isEmpty()) return;
+
+            if (giveMoney) {
+                var economyManager = this.plugin.getEconomyManager();
+                var depositReason = this.plugin.getConfiguration().getAutoClaimConfiguration().depositReason();
+
+                Map<String, List<TransactionDTO>> byEconomy = transactions.stream().collect(Collectors.groupingBy(TransactionDTO::economy_name));
+
+                for (var entry : byEconomy.entrySet()) {
+                    var optionalEconomy = economyManager.getEconomy(entry.getKey());
+                    if (optionalEconomy.isEmpty()) {
+                        this.plugin.getLogger().warning("Economy not found: " + entry.getKey());
+                        continue;
+                    }
+
+                    var economy = optionalEconomy.get();
+                    BigDecimal economyTotal = entry.getValue().stream()
+                            .map(TransactionDTO::value)
+                            .filter(v -> v.compareTo(BigDecimal.ZERO) > 0)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    if (economyTotal.compareTo(BigDecimal.ZERO) > 0) {
+                        economy.deposit(playerUniqueId, economyTotal, depositReason);
+                    }
+                }
+            }
+
+            var transactionIds = transactions.stream().map(TransactionDTO::id).toList();
+            var repository = this.plugin.getStorageManager().with(TransactionRepository.class);
+            repository.updateStatus(transactionIds, TransactionStatus.RETRIEVED);
+        });
+    }
+
     private String formatPendingMoney(Map<String, BigDecimal> pendingByEconomy) {
         var economyManager = this.plugin.getEconomyManager();
         StringBuilder sb = new StringBuilder();
