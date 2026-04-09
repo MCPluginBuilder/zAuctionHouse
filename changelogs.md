@@ -2,6 +2,8 @@
 
 - **Added** `ZAUCTIONHOUSE_CLAIM` button - displays pending money per economy with dynamic placeholders and allows players to claim directly from the auction GUI
 - **Added** Configurable `loading-item` for the claim button, shown while pending money data is being fetched
+- **Added** `PRICE_WITHOUT_DECIMAL` price format - displays prices without decimal places (e.g., `10000.50` -> `10000`)
+- **Added** `%price-price-without-decimal%` placeholder - displays the price without decimals in item lore
 
 ### `ZAUCTIONHOUSE_CLAIM` button
 

@@ -20,6 +20,7 @@ public enum ItemPlaceholder {
     PRICE_RAW("price-price-raw"),
     PRICE_WITH_DECIMAL_FORMAT("price-price-with-decimal-format"),
     PRICE_WITH_REDUCTION("price-price-with-reduction"),
+    PRICE_WITHOUT_DECIMAL("price-price-without-decimal"),
     TIME_REMAINING("time-remaining"),
     FORMATTED_EXPIRE_DATE("formatted-expire-date"),
     ITEM_COUNT("item_count");

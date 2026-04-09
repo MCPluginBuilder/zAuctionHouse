@@ -128,6 +128,8 @@ public abstract class ZItem implements Item {
                 placeholders.register("price-price-with-decimal-format", getFormattedPrice(PriceFormat.PRICE_WITH_DECIMAL_FORMAT));
             if (needed.contains(ItemPlaceholder.PRICE_WITH_REDUCTION))
                 placeholders.register("price-price-with-reduction", getFormattedPrice(PriceFormat.PRICE_WITH_REDUCTION));
+            if (needed.contains(ItemPlaceholder.PRICE_WITHOUT_DECIMAL))
+                placeholders.register("price-price-without-decimal", getFormattedPrice(PriceFormat.PRICE_WITHOUT_DECIMAL));
             if (needed.contains(ItemPlaceholder.TIME_REMAINING))
                 placeholders.register("time-remaining", this.getRemainingTime());
             if (needed.contains(ItemPlaceholder.FORMATTED_EXPIRE_DATE))
