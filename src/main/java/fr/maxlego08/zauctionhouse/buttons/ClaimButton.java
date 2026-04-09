@@ -37,7 +37,9 @@ public class ClaimButton extends Button {
     }
 
     @Override
-    public void onRender(Player player, InventoryEngine inventoryEngine) {
+    public void onInventoryOpen(@NotNull Player player, @NotNull InventoryEngine inventory, @NotNull Placeholders placeholders) {
+        super.onInventoryOpen(player, inventory, placeholders);
+
         var cache = this.plugin.getAuctionManager().getCache(player);
 
         if (cache.has(PlayerCacheKey.PENDING_MONEY_DATA)) {
@@ -51,17 +53,16 @@ public class ClaimButton extends Button {
 
         cache.set(PlayerCacheKey.PENDING_MONEY_LOADING, true);
 
-        this.plugin.getAuctionManager().getClaimService().getPendingMoneyByEconomy(player.getUniqueId())
-                .thenAccept(pendingByEconomy -> {
-                    cache.set(PlayerCacheKey.PENDING_MONEY_DATA, pendingByEconomy);
-                    cache.set(PlayerCacheKey.PENDING_MONEY_LOADING, false);
+        this.plugin.getAuctionManager().getClaimService().getPendingMoneyByEconomy(player.getUniqueId()).thenAccept(pendingByEconomy -> {
+            cache.set(PlayerCacheKey.PENDING_MONEY_DATA, pendingByEconomy);
+            cache.set(PlayerCacheKey.PENDING_MONEY_LOADING, false);
 
-                    this.plugin.getScheduler().runNextTick(task -> {
-                        if (player.isOnline()) {
-                            this.plugin.getAuctionManager().updateInventory(player);
-                        }
-                    });
-                });
+            this.plugin.getScheduler().runNextTick(task -> {
+                if (player.isOnline()) {
+                    inventory.getSpigotInventory().setItem(getSlot(), this.getCustomItemStack(player, false, new Placeholders()));
+                }
+            });
+        });
     }
 
     @Override
@@ -86,7 +87,7 @@ public class ClaimButton extends Button {
             placeholders.register("pending_" + economy.getName(), economyManager.format(economy, amount));
         }
 
-        // Register total placeholder using first economy format, or plain number
+        // Register total placeholder using the first economy format, or plain number
         var economies = economyManager.getEconomies();
         if (!economies.isEmpty()) {
             var firstEconomy = economies.iterator().next();

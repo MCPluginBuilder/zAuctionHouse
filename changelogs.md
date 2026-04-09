@@ -25,12 +25,12 @@ claim-money:
   slot: 48
   loading-item:
     material: CLOCK
-    name: "#2CCED2<bold>CLAIM MONEY"
+    name: "#2CCED2<bold>ᴄʟᴀɪᴍ ᴍᴏɴᴇʏ"
     lore:
       - "#8c8c8c• #ff3535Loading, please wait..."
   item:
     material: GOLD_INGOT
-    name: "#2CCED2<bold>CLAIM MONEY"
+    name: "#2CCED2<bold>ᴄʟᴀɪᴍ ᴍᴏɴᴇʏ"
     lore:
       - ""
       - "#92ffffPending money: #2CCED2%pending_total%"

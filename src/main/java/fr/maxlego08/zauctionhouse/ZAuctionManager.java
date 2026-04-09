@@ -809,7 +809,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         if (seller.isOnline()) {
             var sellerPlayer = seller.getPlayer();
             if (sellerPlayer != null) {
-                clearPlayerCache(sellerPlayer, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.HISTORY_DATA);
+                clearPlayerCache(sellerPlayer, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.HISTORY_DATA, PlayerCacheKey.PENDING_MONEY_DATA);
             }
         }
 
