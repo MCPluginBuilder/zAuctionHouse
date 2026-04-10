@@ -5,6 +5,7 @@
 - **Added** `PRICE_WITHOUT_DECIMAL` price format - displays prices without decimal places (e.g., `10000.50` -> `10000`)
 - **Added** `%price-price-without-decimal%` placeholder - displays the price without decimals in item lore
 - **Added** `/ah admin forceopen` can now be executed from the console
+- **Fixed** `/ah admin open` and `/ah admin history` tab completion no longer loads all offline players, preventing lag on servers with many players
 
 ### `ZAUCTIONHOUSE_CLAIM` button
 
