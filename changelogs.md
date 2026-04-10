@@ -4,6 +4,7 @@
 - **Added** Configurable `loading-item` for the claim button, shown while pending money data is being fetched
 - **Added** `PRICE_WITHOUT_DECIMAL` price format - displays prices without decimal places (e.g., `10000.50` -> `10000`)
 - **Added** `%price-price-without-decimal%` placeholder - displays the price without decimals in item lore
+- **Added** `/ah admin forceopen` can now be executed from the console
 
 ### `ZAUCTIONHOUSE_CLAIM` button
 
