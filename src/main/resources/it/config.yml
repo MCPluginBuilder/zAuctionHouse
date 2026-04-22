@@ -102,6 +102,17 @@ performance-debug:
 #   "MM-dd-yyyy hh:mm a"  → "12-25-2024 02:30 PM"
 date-format: dd/MM/yyyy HH:mm:ss
 
+# Fuso orario utilizzato per la visualizzazione delle date.
+# Utilizza gli identificatori Java TimeZone. Imposta "auto" per usare il fuso orario predefinito del server.
+# Esempi:
+#   "auto"              → Usa il fuso orario predefinito del server
+#   "UTC"               → Tempo Universale Coordinato
+#   "Europe/Paris"      → Ora dell'Europa Centrale (UTC+1/UTC+2)
+#   "America/New_York"  → Ora Orientale (UTC-5/UTC-4)
+#   "Asia/Tokyo"        → Ora Standard del Giappone (UTC+9)
+# Lista completa: https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html
+timezone: auto
+
 #=============================================================================
 # CONFIGURAZIONE DATABASE
 #=============================================================================
@@ -336,6 +347,28 @@ commands:
         - 'history'
         - 'storico'
       inventory: HISTORY
+
+  # Configurazione del cooldown dei comandi
+  # Impedisce ai giocatori di spammare comandi imponendo un ritardo tra le esecuzioni.
+  # NOTA: Questi valori VENGONO ricaricati con /ah admin reload.
+  cooldown:
+
+    # Cooldown predefinito in millisecondi applicato a tutti i comandi.
+    # Imposta a 0 per disabilitare completamente il cooldown.
+    # ATTENZIONE: Si consiglia vivamente di mantenere un cooldown (es: 100ms) per prevenire lo spam di comandi.
+    default-cooldown: 100
+
+    # Permesso che consente a un giocatore di bypassare il cooldown dei comandi.
+    bypass-permission: "zauctionhouse.cooldown.command.bypass"
+
+    # Cooldown personalizzati per comando (in millisecondi).
+    # Usa il primo alias del comando come chiave.
+    # I comandi non elencati qui useranno il valore default-cooldown.
+    # Esempi:
+    #   sell: 500      # 500ms di cooldown per /ah sell
+    #   claim: 1000    # 1 secondo di cooldown per /ah claim
+    #   page: 50       # 50ms di cooldown per /ah page
+    per-command: {}
 
 #=============================================================================
 # SCORCIATOIE DI PREZZO

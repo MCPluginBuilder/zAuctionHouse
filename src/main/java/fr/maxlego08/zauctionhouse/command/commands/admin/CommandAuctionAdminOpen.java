@@ -8,9 +8,8 @@ import fr.maxlego08.zauctionhouse.api.utils.Permission;
 import fr.maxlego08.zauctionhouse.api.command.CommandType;
 import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 public class CommandAuctionAdminOpen extends VCommand {
@@ -20,7 +19,7 @@ public class CommandAuctionAdminOpen extends VCommand {
         this.addSubCommand("open");
         this.setPermission(Permission.ZAUCTIONHOUSE_ADMIN_ITEMS);
         this.setDescription(Message.COMMAND_DESCRIPTION_AUCTION_ADMIN_OPEN);
-        this.addRequireArg("player", (sender, args) -> Arrays.stream(Bukkit.getOfflinePlayers()).limit(50).map(OfflinePlayer::getName).toList());
+        this.addRequireArg("player", (sender, args) -> Bukkit.getOnlinePlayers().stream().map(Player::getName).toList());
         this.addRequireArg("type", (sender, args) -> java.util.List.of("listed", "expired", "purchased"));
         this.setConsoleCanUse(false);
     }

@@ -1,6 +1,7 @@
 package fr.maxlego08.zauctionhouse.api.command;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Manages command registration and lookup. External plugins can use this interface
@@ -22,5 +23,12 @@ public interface CommandManager {
      * @return an unmodifiable view or copy of the registered commands
      */
     List<VCommand> getCommands();
+
+    /**
+     * Clears command cooldowns for a player. Should be called when a player disconnects.
+     *
+     * @param uniqueId the player's UUID
+     */
+    void clearCooldowns(UUID uniqueId);
 
 }

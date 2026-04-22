@@ -153,6 +153,7 @@ public class ZEconomyManager implements EconomyManager {
         return switch (priceFormat) {
             case PRICE_WITH_REDUCTION -> getDisplayBalance(number);
             case PRICE_WITH_DECIMAL_FORMAT -> this.priceDecimalFormat.format(number);
+            case PRICE_WITHOUT_DECIMAL -> String.valueOf(number.longValue());
             default -> number.toString();
         };
     }

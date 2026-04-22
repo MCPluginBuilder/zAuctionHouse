@@ -193,4 +193,14 @@ public interface StorageManager {
      * @return map of UUID to username
      */
     Map<UUID, String> selectPlayers(List<String> uuids);
+
+    /**
+     * Marks unread purchase logs as read for a specific item and seller.
+     * Used by the cluster addon when the seller receives a real-time notification
+     * on another server, to prevent a duplicate "while you were away" notification.
+     *
+     * @param itemId         the item ID
+     * @param sellerUniqueId the seller's UUID
+     */
+    void markPurchaseLogAsRead(int itemId, UUID sellerUniqueId);
 }

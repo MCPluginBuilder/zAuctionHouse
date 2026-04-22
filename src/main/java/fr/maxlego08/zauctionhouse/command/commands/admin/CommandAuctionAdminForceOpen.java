@@ -28,7 +28,7 @@ public class CommandAuctionAdminForceOpen extends VCommand {
             return completions;
         });
         this.addOptionalArg("page");
-        this.setConsoleCanUse(false);
+        this.setConsoleCanUse(true);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CommandAuctionAdminForceOpen extends VCommand {
 
         Player target = argAsPlayer(0);
         if (target == null) {
-            this.auctionManager.message(this.player, Message.ADMIN_TARGET_NOT_FOUND, "%target%", argAsString(0));
+            message(this.plugin, this.sender, Message.ADMIN_TARGET_NOT_FOUND, "%target%", argAsString(0));
             return CommandType.DEFAULT;
         }
 
@@ -52,13 +52,13 @@ public class CommandAuctionAdminForceOpen extends VCommand {
         }
 
         if (inventory == null) {
-            this.auctionManager.message(this.player, Message.INVENTORY_NOT_FOUND, "%inventory-name%", inventoryName);
+            message(this.plugin, this.sender, Message.INVENTORY_NOT_FOUND, "%inventory-name%", inventoryName);
             return CommandType.DEFAULT;
         }
 
         Inventories targetInventory = inventory;
         this.plugin.getScheduler().runNextTick(w -> this.plugin.getInventoriesLoader().openInventory(target, targetInventory, page));
-        this.auctionManager.message(this.player, Message.ADMIN_FORCEOPEN_INVENTORY, "%target%", target.getName(), "%inventory%", targetInventory.getFileName(), "%page%", String.valueOf(page));
+        message(this.plugin, this.sender, Message.ADMIN_FORCEOPEN_INVENTORY, "%target%", target.getName(), "%inventory%", targetInventory.getFileName(), "%page%", String.valueOf(page));
 
         return CommandType.SUCCESS;
     }

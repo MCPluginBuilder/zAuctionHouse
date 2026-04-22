@@ -64,6 +64,10 @@ command-no-arg: "<error>Impossibile trovare il comando con i suoi argomenti."
 # Placeholder disponibili: nessuno
 command-restricted: "<error>Non puoi usare questo comando qui."
 
+# Mostrato quando un giocatore esegue un comando troppo velocemente (cooldown attivo).
+# Placeholder disponibili: nessuno
+command-cooldown: "<error>Attendi prima di usare nuovamente questo comando."
+
 # Formato per le voci di aiuto dei comandi.
 # Placeholder disponibili:
 #   %syntax%      - Sintassi del comando

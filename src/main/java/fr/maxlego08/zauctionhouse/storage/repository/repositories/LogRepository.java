@@ -113,4 +113,22 @@ public class LogRepository extends Repository {
     public void markAsRead(int logId) {
         markAsRead(List.of(logId));
     }
+
+    /**
+     * Marks unread purchase logs as read for a specific item and seller.
+     * Used by the cluster addon when the seller receives a real-time notification
+     * on another server, to prevent a duplicate "while you were away" notification.
+     *
+     * @param itemId          the item ID
+     * @param sellerUniqueId  the seller's UUID (stored as target_unique_id)
+     */
+    public void markPurchaseLogsAsReadByItem(int itemId, UUID sellerUniqueId) {
+        update(schema -> {
+            schema.where("item_id", itemId);
+            schema.where("target_unique_id", sellerUniqueId.toString());
+            schema.where("log_type", LogType.PURCHASE.name());
+            schema.whereNull("readed_at");
+            schema.object("readed_at", new Date());
+        });
+    }
 }

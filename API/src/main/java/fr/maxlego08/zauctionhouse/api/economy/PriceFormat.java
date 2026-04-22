@@ -8,6 +8,11 @@ public enum PriceFormat {
     PRICE_RAW,
 
     /**
+     * Represents a price format without decimal places. (10000.50 -> 10000)
+     */
+    PRICE_WITHOUT_DECIMAL,
+
+    /**
      * Represents a price format with decimal formatting. (10000 -> 10 000)
      */
     PRICE_WITH_DECIMAL_FORMAT,

@@ -244,4 +244,9 @@ public class ZStorageManager extends ItemLoaderUtils implements StorageManager {
     public Map<UUID, String> selectPlayers(List<String> uuids) {
         return with(PlayerRepository.class).select(uuids).stream().collect(Collectors.toMap(PlayerDTO::unique_id, PlayerDTO::name));
     }
+
+    @Override
+    public void markPurchaseLogAsRead(int itemId, UUID sellerUniqueId) {
+        async(() -> with(LogRepository.class).markPurchaseLogsAsReadByItem(itemId, sellerUniqueId));
+    }
 }

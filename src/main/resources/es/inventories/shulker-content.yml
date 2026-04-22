@@ -65,6 +65,16 @@ items:
       - 27-35   # Fila 4
       - 36-44   # Fila 5
 
+    # Slot donde se muestra el indicador vacio cuando el shulker no tiene objetos.
+    empty-slot: 22
+
+    # Objeto mostrado cuando la caja shulker esta vacia.
+    item:
+      material: BARRIER
+      name: "#2CCED2<bold>sʜᴜʟᴋᴇʀ ᴠᴀᴄɪᴏ"
+      lore:
+        - "#92ffffEsta caja shulker no contiene ningun objeto."
+
   #---------------------------------------------------------------------------
   # VISUALIZACION INFO SHULKER
   #---------------------------------------------------------------------------

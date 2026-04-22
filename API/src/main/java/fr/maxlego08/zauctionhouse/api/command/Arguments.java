@@ -36,6 +36,7 @@ public abstract class Arguments {
      * @return the argument as a String, or the default value if not present.
      */
     protected String argAsString(int index, String defaultValue) {
+        if (index == -1) return defaultValue;
         try {
             return this.args[index + this.parentCount];
         } catch (Exception e) {

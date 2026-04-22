@@ -4,6 +4,7 @@ import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.command.CommandManager;
 import fr.maxlego08.zauctionhouse.api.command.CommandType;
 import fr.maxlego08.zauctionhouse.api.command.VCommand;
+import fr.maxlego08.zauctionhouse.api.configuration.records.CooldownConfiguration;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.utils.ZUtils;
 import org.bukkit.Bukkit;
@@ -15,7 +16,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ZCommandManager extends ZUtils implements CommandManager, CommandExecutor, TabCompleter {
 
@@ -35,6 +39,7 @@ public class ZCommandManager extends ZUtils implements CommandManager, CommandEx
 
     private final AuctionPlugin plugin;
     private final List<VCommand> commands = new ArrayList<VCommand>();
+    private final Map<UUID, Map<String, Long>> cooldowns = new HashMap<>();
 
     public ZCommandManager(AuctionPlugin template) {
         this.plugin = template;
@@ -50,6 +55,11 @@ public class ZCommandManager extends ZUtils implements CommandManager, CommandEx
     public VCommand registerCommand(VCommand command) {
         this.commands.add(command);
         return command;
+    }
+
+    @Override
+    public void clearCooldowns(UUID uniqueId) {
+        this.cooldowns.remove(uniqueId);
     }
 
     @Override
@@ -127,6 +137,23 @@ public class ZCommandManager extends ZUtils implements CommandManager, CommandEx
         }
 
         if (command.getPermission() == null || hasPermission(sender, command.getPermission())) {
+
+            if (sender instanceof Player player) {
+                CooldownConfiguration cooldownConfig = this.plugin.getConfiguration().getCooldown();
+                String commandName = command.getFirst();
+                long cooldownMs = cooldownConfig.getCooldownForCommand(commandName);
+                if (cooldownMs > 0 && !hasPermission(sender, cooldownConfig.bypassPermission())) {
+                    UUID uuid = player.getUniqueId();
+                    Map<String, Long> playerCooldowns = this.cooldowns.computeIfAbsent(uuid, k -> new HashMap<>());
+                    long now = System.currentTimeMillis();
+                    Long lastUsed = playerCooldowns.get(commandName);
+                    if (lastUsed != null && (now - lastUsed) < cooldownMs) {
+                        message(this.plugin, sender, Message.COMMAND_COOLDOWN);
+                        return CommandType.DEFAULT;
+                    }
+                    playerCooldowns.put(commandName, now);
+                }
+            }
 
             if (command.isRunAsync()) {
                 this.plugin.getScheduler().runAsync(w -> {

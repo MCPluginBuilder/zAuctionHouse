@@ -25,6 +25,7 @@ public enum Message {
     COMMAND_NO_CONSOLE("<error>Only one player can execute this command."),
     COMMAND_NO_ARG("<error>Impossible to find the command with its arguments."),
     COMMAND_RESTRICTED("<error>You cannot use this command here."),
+    COMMAND_COOLDOWN("<error>Please wait before using this command again."),
     COMMAND_SYNTAX_HELP("<white>%syntax% <dark_gray>» <gray>%description%"),
 
     INVENTORY_NOT_FOUND("<error>Impossible to find the inventory <white>%inventory-name%<error>."),

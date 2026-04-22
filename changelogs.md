@@ -1,6 +1,55 @@
-# 4.0.0.5 (unreleased)
+# 4.0.0.6 (unreleased)
 
-# 4.0.0.4 
+# 4.0.0.5
+
+- **Added** `ZAUCTIONHOUSE_CLAIM` button - displays pending money per economy with dynamic placeholders and allows players to claim directly from the auction GUI
+- **Added** Configurable `loading-item` for the claim button, shown while pending money data is being fetched
+- **Added** `PRICE_WITHOUT_DECIMAL` price format - displays prices without decimal places (e.g., `10000.50` -> `10000`)
+- **Added** `%price-price-without-decimal%` placeholder - displays the price without decimals in item lore
+- **Added** `/ah admin forceopen` can now be executed from the console
+- **Added** `timezone` configuration option - allows changing the timezone used for all date placeholders (`%date%`, `%formatted-expire-date%`, `%expires_at%`). Supports all Java TimeZone IDs (e.g., `Europe/Paris`, `America/New_York`, `UTC`). Defaults to `auto` (server timezone)
+- **Fixed** `/ah admin open` and `/ah admin history` tab completion no longer loads all offline players, preventing lag on servers with many players
+- **Fixed** `updateListedItems` crash on Folia/Canvas - inventory holder access was running on an async thread instead of the main tick thread
+- **Fixed** economy name argument configuration for the sell command - when the economy argument index was not configured, the default value was ignored causing a null economy name
+
+### `ZAUCTIONHOUSE_CLAIM` button
+
+Allows players to claim their pending money directly from the auction house inventory. The button displays per-economy pending amounts using dynamic placeholders and supports a loading state while data is being fetched.
+
+**Available placeholders:**
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%pending_total%` | Total pending money across all economies (formatted) |
+| `%pending_<economy_name>%` | Pending money for a specific economy (e.g., `%pending_vault%`) |
+| `%has_pending%` | `true` or `false` |
+
+The economy name corresponds to the name defined in your `economies.yml` configuration.
+
+**Example configuration:**
+
+```yaml
+claim-money:
+  type: ZAUCTIONHOUSE_CLAIM
+  slot: 48
+  loading-item:
+    material: CLOCK
+    name: "#2CCED2<bold>ᴄʟᴀɪᴍ ᴍᴏɴᴇʏ"
+    lore:
+      - "#8c8c8c• #ff3535Loading, please wait..."
+  item:
+    material: GOLD_INGOT
+    name: "#2CCED2<bold>ᴄʟᴀɪᴍ ᴍᴏɴᴇʏ"
+    lore:
+      - ""
+      - "#92ffffPending money: #2CCED2%pending_total%"
+      - "#92ffffVault: #2CCED2%pending_vault%"
+      - "#92ffffTokens: #2CCED2%pending_tokens%"
+      - ""
+      - "#8c8c8c• #2CCED2Click to claim your money"
+```
+
+# 4.0.0.4
 
 - **Added** ZelAuction migration - migrate data from ZelAuction plugin to zAuctionHouse V4 using `/ah admin migrate zelauction confirm`
 - **Added** Search system - players can search items by name, material, lore, or seller directly from the auction house GUI or via `/ah search <query>`

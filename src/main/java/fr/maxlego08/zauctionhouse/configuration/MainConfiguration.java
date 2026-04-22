@@ -10,6 +10,7 @@ import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleArgumentConfi
 import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleCommandConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ActionConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.AutoClaimConfiguration;
+import fr.maxlego08.zauctionhouse.api.configuration.records.CooldownConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ExpirationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SalesNotificationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ItemDisplayConfiguration;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class MainConfiguration extends YamlLoader implements Configuration {
 
@@ -61,6 +63,7 @@ public class MainConfiguration extends YamlLoader implements Configuration {
     private SalesNotificationConfiguration salesNotificationConfiguration;
     private PerformanceConfiguration performanceConfiguration;
     private SearchFilterConfiguration searchFilterConfiguration;
+    private CooldownConfiguration cooldownConfiguration;
     private List<InventoryCommandConfiguration> inventoryCommandConfigurations;
     private boolean sellInventoryEnabled;
 
@@ -92,8 +95,13 @@ public class MainConfiguration extends YamlLoader implements Configuration {
         this.salesNotificationConfiguration = SalesNotificationConfiguration.of(plugin, config);
         this.performanceConfiguration = PerformanceConfiguration.of(plugin, config);
         this.searchFilterConfiguration = SearchFilterConfiguration.of(plugin, config);
+        this.cooldownConfiguration = CooldownConfiguration.of(plugin, config);
         this.inventoryCommandConfigurations = InventoryCommandConfiguration.of(plugin, config);
         this.dateFormat = new SimpleDateFormat(config.getString("date-format", "dd/MM/yyyy HH:mm:ss"));
+        String timezone = config.getString("timezone", "auto");
+        if (timezone != null && !timezone.equalsIgnoreCase("auto")) {
+            this.dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+        }
         this.sellInventoryEnabled = config.getBoolean("commands.sell.enable-sell-inventory", false);
 
         // Validate critical configurations
@@ -236,6 +244,11 @@ public class MainConfiguration extends YamlLoader implements Configuration {
     @Override
     public SearchFilterConfiguration getSearchFilter() {
         return this.searchFilterConfiguration;
+    }
+
+    @Override
+    public CooldownConfiguration getCooldown() {
+        return this.cooldownConfiguration;
     }
 
     @Override

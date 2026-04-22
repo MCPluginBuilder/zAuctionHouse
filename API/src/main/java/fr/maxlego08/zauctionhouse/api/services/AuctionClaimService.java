@@ -53,4 +53,17 @@ public interface AuctionClaimService {
      * @param player the player who just joined
      */
     void handlePlayerJoin(Player player);
+
+    /**
+     * Deletes all pending transactions for a player, optionally depositing the money first.
+     * <p>
+     * If {@code giveMoney} is {@code true}, the pending money is deposited into the player's
+     * economy accounts before the transactions are marked as retrieved.
+     * If {@code false}, the transactions are simply discarded without any payment.
+     *
+     * @param playerUniqueId the UUID of the player whose pending transactions should be cleared
+     * @param giveMoney      {@code true} to deposit the pending money before clearing, {@code false} to discard it
+     * @return a future that completes when all transactions have been processed
+     */
+    CompletableFuture<Void> clearPendingTransactions(UUID playerUniqueId, boolean giveMoney);
 }

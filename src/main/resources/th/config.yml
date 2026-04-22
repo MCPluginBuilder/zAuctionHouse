@@ -89,6 +89,17 @@ performance-debug:
 #   "MM-dd-yyyy hh:mm a"  → "12-25-2024 02:30 PM"
 date-format: dd/MM/yyyy HH:mm:ss
 
+# โซนเวลาที่ใช้แสดงวันที่
+# ใช้ Java TimeZone IDs ตั้งค่าเป็น "auto" เพื่อใช้โซนเวลาเริ่มต้นของเซิร์ฟเวอร์
+# ตัวอย่าง:
+#   "auto"              → ใช้โซนเวลาเริ่มต้นของเซิร์ฟเวอร์
+#   "UTC"               → เวลาสากลเชิงพิกัด
+#   "Europe/Paris"      → เวลายุโรปกลาง (UTC+1/UTC+2)
+#   "America/New_York"  → เวลาตะวันออก (UTC-5/UTC-4)
+#   "Asia/Bangkok"      → เวลามาตรฐานไทย (UTC+7)
+# รายชื่อทั้งหมด: https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html
+timezone: auto
+
 #=============================================================================
 # DATABASE CONFIGURATION (ฐานข้อมูล)
 #=============================================================================
@@ -297,6 +308,28 @@ commands:
       aliases:
         - 'history'
       inventory: HISTORY
+
+  # การตั้งค่า cooldown ของคำสั่ง
+  # ป้องกันผู้เล่นจากการ spam คำสั่งโดยกำหนดเวลาหน่วงระหว่างการใช้งาน
+  # หมายเหตุ: ค่าเหล่านี้จะถูกโหลดใหม่ด้วย /ah admin reload
+  cooldown:
+
+    # Cooldown เริ่มต้นในหน่วยมิลลิวินาทีสำหรับทุกคำสั่ง
+    # ตั้งเป็น 0 เพื่อปิดการใช้งาน cooldown
+    # คำเตือน: แนะนำให้ตั้ง cooldown ไว้ (เช่น 100ms) เพื่อป้องกันการ spam คำสั่ง
+    default-cooldown: 100
+
+    # สิทธิ์ที่อนุญาตให้ผู้เล่นข้าม cooldown ของคำสั่ง
+    bypass-permission: "zauctionhouse.cooldown.command.bypass"
+
+    # Cooldown เฉพาะคำสั่ง (ในหน่วยมิลลิวินาที)
+    # ใช้ alias แรกของคำสั่งเป็น key
+    # คำสั่งที่ไม่ได้ระบุจะใช้ค่า default-cooldown
+    # ตัวอย่าง:
+    #   sell: 500      # 500ms cooldown สำหรับ /ah sell
+    #   claim: 1000    # 1 วินาที cooldown สำหรับ /ah claim
+    #   page: 50       # 50ms cooldown สำหรับ /ah page
+    per-command: {}
 
 #=============================================================================
 # PRICE SHORTCUTS (คีย์ย่อใส่ราคา)
