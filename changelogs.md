@@ -8,6 +8,7 @@
 - **Added** `timezone` configuration option - allows changing the timezone used for all date placeholders (`%date%`, `%formatted-expire-date%`, `%expires_at%`). Supports all Java TimeZone IDs (e.g., `Europe/Paris`, `America/New_York`, `UTC`). Defaults to `auto` (server timezone)
 - **Fixed** `/ah admin open` and `/ah admin history` tab completion no longer loads all offline players, preventing lag on servers with many players
 - **Fixed** `updateListedItems` crash on Folia/Canvas - inventory holder access was running on an async thread instead of the main tick thread
+- **Fixed** economy name argument configuration for the sell command - when the economy argument index was not configured, the default value was ignored causing a null economy name
 
 ### `ZAUCTIONHOUSE_CLAIM` button
 
