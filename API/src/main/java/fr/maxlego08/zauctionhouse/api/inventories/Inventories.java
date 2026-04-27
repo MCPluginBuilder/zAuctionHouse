@@ -92,6 +92,11 @@ public enum Inventories {
      */
     SHULKER_CONTENT("shulker-content"),
 
+    /**
+     * Combined view of selling, expired, and purchased items.
+     */
+    COMBINED_ITEMS("combined-items"),
+
     ;
 
     private final String fileName;

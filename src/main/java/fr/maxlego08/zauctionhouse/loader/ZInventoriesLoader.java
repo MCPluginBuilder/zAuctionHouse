@@ -20,6 +20,7 @@ import fr.maxlego08.zauctionhouse.buttons.inventory.ExpiredInventoryButton;
 import fr.maxlego08.zauctionhouse.buttons.inventory.HistoryInventoryButton;
 import fr.maxlego08.zauctionhouse.buttons.inventory.PurchasedInventoryButton;
 import fr.maxlego08.zauctionhouse.buttons.inventory.SellingInventoryButton;
+import fr.maxlego08.zauctionhouse.buttons.list.CombinedItemsButton;
 import fr.maxlego08.zauctionhouse.buttons.list.ExpiredItemsButton;
 import fr.maxlego08.zauctionhouse.buttons.list.ListedItemsButton;
 import fr.maxlego08.zauctionhouse.buttons.list.PurchasedItemsButton;
@@ -32,6 +33,7 @@ import fr.maxlego08.zauctionhouse.buttons.ClearSearchButton;
 import fr.maxlego08.zauctionhouse.buttons.shulker.ShulkerInfoButton;
 import fr.maxlego08.zauctionhouse.buttons.ClaimButton;
 import fr.maxlego08.zauctionhouse.buttons.shulker.ShulkerOpenButton;
+import fr.maxlego08.zauctionhouse.loader.buttons.CombinedItemsLoader;
 import fr.maxlego08.zauctionhouse.loader.buttons.*;
 import fr.maxlego08.zauctionhouse.loader.permissibles.CategoryPermissibleLoader;
 import fr.maxlego08.zauctionhouse.utils.PerformanceDebug;
@@ -123,6 +125,7 @@ public class ZInventoriesLoader extends ZUtils implements InventoriesLoader {
         this.buttonManager.register(new EmptySlotLoader(this.plugin, SellingItemsButton.class, "ZAUCTIONHOUSE_SELLING_ITEMS"));
         this.buttonManager.register(new EmptySlotLoader(this.plugin, PurchasedItemsButton.class, "ZAUCTIONHOUSE_PURCHASED_ITEMS"));
         this.buttonManager.register(new NoneLoader(this.plugin, ItemContentButton.class, "ZAUCTIONHOUSE_ITEM_CONTENT"));
+        this.buttonManager.register(new CombinedItemsLoader(this.plugin));
 
         this.buttonManager.register(new NoneLoader(this.plugin, ExpiredInventoryButton.class, "ZAUCTIONHOUSE_EXPIRED_INVENTORY"));
         this.buttonManager.register(new NoneLoader(this.plugin, SellingInventoryButton.class, "ZAUCTIONHOUSE_SELLING_INVENTORY"));
@@ -206,6 +209,9 @@ public class ZInventoriesLoader extends ZUtils implements InventoriesLoader {
                 // Admin
                 "admin/admin-selling-items", "admin/admin-expired-items", "admin/admin-purchased-items", //
                 "admin/admin-logs", "admin/admin-transactions", "admin/admin-history-main", //
+
+                // Combined
+                "combined-items", //
 
                 // Confirm
                 "confirms/remove-confirm", "confirms/purchase-confirm", //
