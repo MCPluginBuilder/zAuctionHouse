@@ -8,6 +8,7 @@ import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.cache.PlayerCacheKey;
 import fr.maxlego08.zauctionhouse.api.economy.AuctionEconomy;
 import fr.maxlego08.zauctionhouse.api.item.ItemType;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,7 +42,12 @@ public class SellPriceButton extends Button {
         var manager = this.plugin.getAuctionManager();
         var cache = manager.getCache(player);
         BigDecimal currentPrice = cache.get(PlayerCacheKey.SELL_PRICE, BigDecimal.ZERO);
-        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, this.plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION));
+        AuctionEconomy defaultEconomy = this.plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) {
+            this.plugin.getAuctionManager().message(player, Message.SELL_ERROR_DEFAULT_ECONOMY);
+            return;
+        }
+        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, defaultEconomy);
 
         BigDecimal amount = getAmountForClick(event.getClick());
         BigDecimal newPrice = currentPrice.add(amount);
@@ -76,7 +82,9 @@ public class SellPriceButton extends Button {
         var manager = this.plugin.getAuctionManager();
         var cache = manager.getCache(player);
         BigDecimal price = cache.get(PlayerCacheKey.SELL_PRICE, BigDecimal.ZERO);
-        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, this.plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION));
+        AuctionEconomy defaultEconomy = this.plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) return getItemStack().build(player, false, placeholders);
+        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, defaultEconomy);
 
         placeholders.register("price", this.plugin.getEconomyManager().format(economy, price));
         placeholders.register("economy", economy.getDisplayName());

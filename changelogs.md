@@ -5,6 +5,8 @@
 - **Fixed** `ItemRemovedListener` (Redis addon) - removed fragile DB state validation that rejected removal messages due to race conditions, added safety-net cleanup across all storage types
 - **Fixed** `ItemStatusListener` (Redis addon) - status change propagation now searches across all storage types (LISTED, EXPIRED, PURCHASED) instead of only LISTED
 - **Fixed** `ExpireService` - added guard against re-expiring items already deleted/claimed on another server
+- **Added** Redis Sentinel support (Redis addon) - enables high-availability Redis setups with automatic master discovery and failover. Configure `mode: "sentinel"` in `config.yml` with sentinel nodes. Fully backward compatible, existing standalone configurations work without changes
+- **Fixed** `NullPointerException` when default economy is not configured - `/ah sell` and all sell-related buttons now display an error message instead of crashing. Added startup validation with prominent warnings in console when a default economy is missing from `economies.yml`
 
 # 4.0.0.5
 

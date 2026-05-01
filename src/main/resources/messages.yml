@@ -125,6 +125,10 @@ sell-error-change: "<error>The item in your hand has changed, sale cancelled."
 #   %name% - Economy name that was specified
 sell-error-economy: "<error>Unable to find the economy <white>%name%<error>."
 
+# Shown when no default economy is configured for the item type.
+# Available placeholders: none
+sell-error-default-economy: "<error>No default economy is configured. Please contact an administrator."
+
 # Shown when trying to confirm a sale with no items selected (sell inventory).
 # Available placeholders: none
 sell-inventory-empty: "<error>You must place items in the inventory before confirming."

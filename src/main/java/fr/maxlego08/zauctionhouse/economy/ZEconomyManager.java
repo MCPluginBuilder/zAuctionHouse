@@ -121,15 +121,26 @@ public class ZEconomyManager implements EconomyManager {
         for (ItemType value : ItemType.values()) {
             var economyName = configuration.getString("default-economy." + value.name().toLowerCase(), null);
             if (economyName == null) {
-                this.plugin.getLogger().severe("Default economy for " + value.name() + " is not set, skip it...");
+                this.plugin.getLogger().severe("Default economy for " + value.name() + " is not set! Please configure 'default-economy." + value.name().toLowerCase() + "' in economies.yml");
                 continue;
             }
             var economy = getEconomy(economyName);
             if (economy.isEmpty()) {
-                this.plugin.getLogger().severe("Default economy for " + value.name() + " is not set, skip it...");
+                this.plugin.getLogger().severe("Default economy '" + economyName + "' for " + value.name() + " was not found! Make sure the economy '" + economyName + "' is enabled in economies.yml");
                 continue;
             }
             this.defaultEconomies.put(value, economy.get());
+        }
+
+        // Validate that all item types have a default economy
+        for (ItemType value : ItemType.values()) {
+            if (!this.defaultEconomies.containsKey(value)) {
+                this.plugin.getLogger().severe("========================================");
+                this.plugin.getLogger().severe("WARNING: No default economy for " + value.name() + "!");
+                this.plugin.getLogger().severe("Players will NOT be able to sell/buy items.");
+                this.plugin.getLogger().severe("Please check your economies.yml configuration.");
+                this.plugin.getLogger().severe("========================================");
+            }
         }
     }
 

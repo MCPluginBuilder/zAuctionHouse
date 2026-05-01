@@ -125,6 +125,10 @@ sell-error-change: "<error>El objeto en tu mano ha cambiado, venta cancelada."
 #   %name% - Nombre de la economia especificada
 sell-error-economy: "<error>No se puede encontrar la economia <white>%name%<error>."
 
+# Mostrado cuando no hay economia predeterminada configurada para el tipo de objeto.
+# Placeholders disponibles: ninguno
+sell-error-default-economy: "<error>No hay economia predeterminada configurada. Por favor contacta a un administrador."
+
 # Mostrado durante la confirmacion de una venta sin objetos seleccionados (inventario de venta).
 # Placeholders disponibles: ninguno
 sell-inventory-empty: "<error>Debes colocar objetos en el inventario antes de confirmar."

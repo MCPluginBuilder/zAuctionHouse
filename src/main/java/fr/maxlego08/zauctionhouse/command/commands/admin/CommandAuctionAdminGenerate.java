@@ -148,6 +148,10 @@ public class CommandAuctionAdminGenerate extends VCommand {
         var storageManager = plugin.getStorageManager();
         var economyManager = plugin.getEconomyManager();
         AuctionEconomy defaultEconomy = economyManager.getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) {
+            plugin.getLogger().severe("No default economy configured for AUCTION items, cannot generate items.");
+            return;
+        }
         AtomicInteger created = new AtomicInteger(0);
         AtomicInteger lastReported = new AtomicInteger(0);
         int totalAmount = amount;

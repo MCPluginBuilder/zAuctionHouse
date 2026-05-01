@@ -52,6 +52,7 @@ public enum Message {
     SELL_ERROR_AIR("<error>Are you stupid ? You can't sell air !"),
     SELL_ERROR_CHANGE("<error>The item in your hand has changed, sale cancelled."),
     SELL_ERROR_ECONOMY("<error>Unable to find the economy <white>%name%<error>."),
+    SELL_ERROR_DEFAULT_ECONOMY("<error>No default economy is configured. Please contact an administrator."),
     SELL_INVENTORY_EMPTY("<error>You must place items in the inventory before confirming."),
     SELL_INVENTORY_CANCELLED("<error>You cancelled the sale, your items have been returned."),
     SELL_ITEMS_CLEARED("<success>Selected items have been cleared."),
