@@ -13,5 +13,6 @@ softdepend:
   - ItemsAdder
   - Nexo
   - Oraxen
+  - LuckPerms
 libraries:
   - org.mariadb.jdbc:mariadb-java-client:3.5.6

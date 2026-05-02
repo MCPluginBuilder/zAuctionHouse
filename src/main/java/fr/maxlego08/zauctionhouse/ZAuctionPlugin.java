@@ -9,6 +9,7 @@ import fr.maxlego08.zauctionhouse.api.category.CategoryManager;
 import fr.maxlego08.zauctionhouse.api.cluster.AuctionClusterBridge;
 import fr.maxlego08.zauctionhouse.api.configuration.Configuration;
 import fr.maxlego08.zauctionhouse.api.configuration.ConfigurationFile;
+import fr.maxlego08.zauctionhouse.permissions.PermissionRegistrar;
 import fr.maxlego08.zauctionhouse.api.economy.EconomyManager;
 import fr.maxlego08.zauctionhouse.api.hooks.permission.OfflinePermission;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationRegistry;
@@ -86,6 +87,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private VersionChecker versionChecker;
     private boolean isEnabled = false;
     private PlatformScheduler platformScheduler;
+    private final PermissionRegistrar permissionRegistrar = new PermissionRegistrar(this);
     private AuctionClusterBridge auctionClusterBridge = new LocalAuctionClusterBridge();
     private OfflinePermission offlinePermission = new EmptyOfflinePermission();
 
@@ -116,6 +118,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
         this.registerCustomItemLoaders();
 
         this.loadFiles();
+        this.permissionRegistrar.register();
 
         this.auctionManager.setupSortedItemsCache();
 
@@ -206,6 +209,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
         this.localeHelper = new LocaleHelper(getLogger(), configuredLanguage);
 
         this.loadFiles();
+        this.permissionRegistrar.register();
         this.inventoriesLoader.reload();
 
         // Update economy references for all items after reload
