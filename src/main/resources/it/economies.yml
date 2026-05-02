@@ -19,8 +19,8 @@
 #
 # TIPI DI ECONOMIA SUPPORTATI:
 #   - VAULT        : Economia Vault standard (funziona con qualsiasi plugin compatibile Vault)
-#   - PLAYER_POINTS: Valuta del plugin PlayerPoints
-#   - COINS_ENGINE : Valute del plugin CoinsEngine
+#   - PLAYERPOINTS : Valuta del plugin PlayerPoints
+#   - COINSENGINE  : Valute del plugin CoinsEngine
 #   - REDIRECT     : Reindirizza a un'altra economia per nome
 #   - ITEM         : Economia basata su oggetti (scambia oggetti specifici come valuta)
 #   - LEVEL        : Livelli di esperienza come valuta

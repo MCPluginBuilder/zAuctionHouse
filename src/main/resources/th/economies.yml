@@ -19,8 +19,8 @@
 #
 # ประเภท ECONOMY ที่รองรับ:
 #   - VAULT        : เศรษฐกิจหลักผ่าน Vault (ทำงานกับปลั๊กอิน economy ที่รองรับ Vault ทั้งหมด)
-#   - PLAYER_POINTS: สกุลเงินจากปลั๊กอิน PlayerPoints
-#   - COINS_ENGINE : สกุลเงินจากปลั๊กอิน CoinsEngine
+#   - PLAYERPOINTS : สกุลเงินจากปลั๊กอิน PlayerPoints
+#   - COINSENGINE  : สกุลเงินจากปลั๊กอิน CoinsEngine
 #   - REDIRECT     : ส่งต่อไปใช้ economy อื่นตามชื่อ
 #   - ITEM         : เศรษฐกิจแบบไอเท็ม (ใช้ไอเท็มเฉพาะเป็นสกุลเงิน)
 #   - LEVEL        : ใช้เลเวล Exp เป็นสกุลเงิน

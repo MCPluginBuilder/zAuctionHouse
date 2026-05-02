@@ -7,6 +7,7 @@
 - **Fixed** `ExpireService` - added guard against re-expiring items already deleted/claimed on another server
 - **Added** Redis Sentinel support (Redis addon) - enables high-availability Redis setups with automatic master discovery and failover. Configure `mode: "sentinel"` in `config.yml` with sentinel nodes. Fully backward compatible, existing standalone configurations work without changes
 - **Fixed** `NullPointerException` when default economy is not configured - `/ah sell` and all sell-related buttons now display an error message instead of crashing. Added startup validation with prominent warnings in console when a default economy is missing from `economies.yml`
+- **Fixed** Incorrect economy type names in `economies.yml` comments - `COINS_ENGINE` and `PLAYER_POINTS` did not match the actual CurrenciesAPI enum values (`COINSENGINE`, `PLAYERPOINTS`), causing these economy types to silently fail to load when users followed the documented names
 
 # 4.0.0.5
 
