@@ -762,7 +762,13 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
         // On donne l'argent au vendeur
         TransactionStatus transactionStatus;
-        if ((!seller.isOnline() && auctionEconomy.mustBeOnline()) || !auctionEconomy.isAutoClaim()) {
+        var clusterBridge = this.plugin.getAuctionClusterBridge();
+        boolean sellerOnThisServer = seller.isOnline();
+        boolean deferDeposit = !auctionEconomy.isAutoClaim()
+                || (!sellerOnThisServer && auctionEconomy.mustBeOnline())
+                || (!sellerOnThisServer && clusterBridge.isDistributed());
+
+        if (deferDeposit) {
 
             transactionStatus = TransactionStatus.PENDING;
         } else {

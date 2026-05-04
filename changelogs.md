@@ -13,6 +13,8 @@
 - **Added** `ZAUCTIONHOUSE_REMOVE_ALL_EXPIRED`, `ZAUCTIONHOUSE_REMOVE_ALL_SELLING`, `ZAUCTIONHOUSE_REMOVE_ALL_PURCHASED` buttons - allows players to retrieve all items at once from expired, selling, and purchased inventories. Items are given one by one and stops when inventory is full (if `player-inventory-must-have-free-space` is enabled)
 - **Added** `ItemContentProvider` API - extensible system for displaying the contents of container items (shulker boxes, custom containers from plugins). External plugins can register their own providers via `AuctionPlugin.getItemContentManager().registerProvider()`
 - **Added** AxShulkers hook - displays the contents of shulker boxes managed by the AxShulkers plugin in the item content viewer. AxShulkers stores shulker contents externally instead of in vanilla NBT, so this hook is required to view their contents
+- **Fixed** Seller not receiving money in multi-server (Redis) setups when the buyer is on a different server - the plugin tried to deposit money locally on the buyer's server where the seller's economy account may not exist. Money is now deferred to `PENDING` status in distributed environments and claimed by the seller on their own server via `/ah claim` or auto-claim on join
+- **Added** `AuctionClusterBridge.isDistributed()` - allows cluster bridge implementations to signal a multi-server environment so the plugin can adapt its behavior (e.g., defer deposits instead of executing them locally)
 
 # 4.0.0.5
 
