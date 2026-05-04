@@ -9,6 +9,10 @@
 - **Fixed** `NullPointerException` when default economy is not configured - `/ah sell` and all sell-related buttons now display an error message instead of crashing. Added startup validation with prominent warnings in console when a default economy is missing from `economies.yml`
 - **Fixed** Incorrect economy type names in `economies.yml` comments - `COINS_ENGINE` and `PLAYER_POINTS` did not match the actual CurrenciesAPI enum values (`COINSENGINE`, `PLAYERPOINTS`), causing these economy types to silently fail to load when users followed the documented names
 - **Added** All permissions are now programmatically registered in Spigot on startup and reload. Includes static permissions (use, sell, admin, etc.), and dynamic permissions from configuration (listing limits, expiration tiers, tax bypass/reductions, economy access, inventory commands, cooldown bypass). All permissions are grouped under the `zauctionhouse.*` wildcard
+- **Fixed** Items dropping on the ground when claiming expired, purchased, or selling items with a full inventory - items now stay in their storage when the player's inventory is full. Added `player-inventory-must-have-free-space` config option under `remove-expired-item` and `selling-item` sections (enabled by default)
+- **Added** `ZAUCTIONHOUSE_REMOVE_ALL_EXPIRED`, `ZAUCTIONHOUSE_REMOVE_ALL_SELLING`, `ZAUCTIONHOUSE_REMOVE_ALL_PURCHASED` buttons - allows players to retrieve all items at once from expired, selling, and purchased inventories. Items are given one by one and stops when inventory is full (if `player-inventory-must-have-free-space` is enabled)
+- **Added** `ItemContentProvider` API - extensible system for displaying the contents of container items (shulker boxes, custom containers from plugins). External plugins can register their own providers via `AuctionPlugin.getItemContentManager().registerProvider()`
+- **Added** AxShulkers hook - displays the contents of shulker boxes managed by the AxShulkers plugin in the item content viewer. AxShulkers stores shulker contents externally instead of in vanilla NBT, so this hook is required to view their contents
 
 # 4.0.0.5
 

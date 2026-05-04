@@ -372,4 +372,28 @@ public interface AuctionManager {
      * @param player the player whose search should be cleared
      */
     void clearSearch(Player player);
+
+    /**
+     * Removes all expired items for the given player, returning them to their inventory.
+     * Stops if the player's inventory is full (when free-space check is enabled).
+     *
+     * @param player the player claiming their expired items
+     */
+    void removeAllExpiredItems(Player player);
+
+    /**
+     * Removes all selling items for the given player, returning them to their inventory.
+     * Stops if the player's inventory is full (when free-space check is enabled).
+     *
+     * @param player the player removing their selling items
+     */
+    void removeAllSellingItems(Player player);
+
+    /**
+     * Removes all purchased items for the given player, returning them to their inventory.
+     * Stops if the player's inventory is full (when free-space check is enabled).
+     *
+     * @param player the player claiming their purchased items
+     */
+    void removeAllPurchasedItems(Player player);
 }

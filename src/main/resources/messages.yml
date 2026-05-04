@@ -261,7 +261,7 @@ not-enough-money: "<error>You don't have enough money to buy this."
 
 # Shown when player's inventory is full (if space check is enabled).
 # Available placeholders: none
-not-enough-space: "<error>You don't have enough space in your inventory to buy this item."
+not-enough-space: "<error>You don't have enough space in your inventory."
 
 # Shown when listing price exceeds the maximum allowed.
 # Available placeholders:
@@ -591,3 +591,12 @@ search-searching: "<#8a8a8a>Searching for <#ffffff>%query%<#8a8a8a>..."
 
 # Command description for /ah search
 command-description-auction-search: "Search for items in the auction house"
+
+#=============================================================================
+# REMOVE ALL MESSAGES
+#=============================================================================
+
+# Shown when a player retrieves all items at once.
+# Available placeholders:
+#   %amount% - Number of items retrieved
+remove-all-items: "#e6fff3You have retrieved <white>%amount%<#e6fff3> item(s)."

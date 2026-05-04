@@ -578,3 +578,5 @@ search-cleared: "<#8a8a8a>ล้างการค้นหาแล้ว"
 search-no-results: "<#8a8a8a>ไม่พบไอเทมสำหรับ <#ffffff>%query%<#8a8a8a>"
 search-searching: "<#8a8a8a>กำลังค้นหา <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "ค้นหาไอเทมใน auction house"
+
+remove-all-items: "#e6fff3คุณได้รับไอเทมคืนจำนวน <white>%amount%<#e6fff3> ชิ้น"

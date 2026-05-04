@@ -7,11 +7,14 @@ import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.InventoriesLoader;
 import fr.maxlego08.zauctionhouse.api.category.CategoryManager;
 import fr.maxlego08.zauctionhouse.api.cluster.AuctionClusterBridge;
+import fr.maxlego08.zauctionhouse.api.command.CommandManager;
 import fr.maxlego08.zauctionhouse.api.configuration.Configuration;
 import fr.maxlego08.zauctionhouse.api.configuration.ConfigurationFile;
-import fr.maxlego08.zauctionhouse.permissions.PermissionRegistrar;
 import fr.maxlego08.zauctionhouse.api.economy.EconomyManager;
+import fr.maxlego08.zauctionhouse.api.hooks.itemcontent.ItemContentManager;
 import fr.maxlego08.zauctionhouse.api.hooks.permission.OfflinePermission;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
+import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationRegistry;
 import fr.maxlego08.zauctionhouse.api.placeholders.Placeholder;
 import fr.maxlego08.zauctionhouse.api.placeholders.PlaceholderRegister;
@@ -21,28 +24,28 @@ import fr.maxlego08.zauctionhouse.api.storage.StorageManager;
 import fr.maxlego08.zauctionhouse.api.utils.Plugins;
 import fr.maxlego08.zauctionhouse.category.ZCategoryManager;
 import fr.maxlego08.zauctionhouse.cluster.LocalAuctionClusterBridge;
-import fr.maxlego08.zauctionhouse.api.command.CommandManager;
-import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.command.ZCommandManager;
 import fr.maxlego08.zauctionhouse.command.commands.CommandAuction;
 import fr.maxlego08.zauctionhouse.configuration.MainConfiguration;
 import fr.maxlego08.zauctionhouse.discord.DiscordWebhookService;
 import fr.maxlego08.zauctionhouse.economy.ZEconomyManager;
+import fr.maxlego08.zauctionhouse.hooks.itemcontent.VanillaShulkerContentProvider;
+import fr.maxlego08.zauctionhouse.hooks.itemcontent.ZItemContentManager;
 import fr.maxlego08.zauctionhouse.hooks.permissions.EmptyOfflinePermission;
 import fr.maxlego08.zauctionhouse.hooks.permissions.LuckPermsOfflinePermission;
 import fr.maxlego08.zauctionhouse.listeners.PlayerListener;
 import fr.maxlego08.zauctionhouse.loader.MessageLoader;
-import fr.maxlego08.zauctionhouse.search.ChatSearchListener;
 import fr.maxlego08.zauctionhouse.loader.ZInventoriesLoader;
 import fr.maxlego08.zauctionhouse.migration.ZMigrationRegistry;
-import fr.maxlego08.zauctionhouse.api.migration.MigrationProvider;
 import fr.maxlego08.zauctionhouse.migration.v3.V3MigrationProvider;
+import fr.maxlego08.zauctionhouse.permissions.PermissionRegistrar;
 import fr.maxlego08.zauctionhouse.placeholder.DistantPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.LocalPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.placeholders.GlobalPlaceholders;
 import fr.maxlego08.zauctionhouse.placeholder.placeholders.PlayerPlaceholders;
 import fr.maxlego08.zauctionhouse.rule.ZItemRuleManager;
 import fr.maxlego08.zauctionhouse.rule.ZRuleLoaderRegistry;
+import fr.maxlego08.zauctionhouse.search.ChatSearchListener;
 import fr.maxlego08.zauctionhouse.storage.ZStorageManager;
 import fr.maxlego08.zauctionhouse.utils.LocaleHelper;
 import fr.maxlego08.zauctionhouse.utils.Metrics;
@@ -67,7 +70,6 @@ import java.util.logging.Level;
 
 public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
-    private LocaleHelper localeHelper;
     private final StorageManager storageManager = new ZStorageManager(this);
     private final Configuration configuration = new MainConfiguration(this);
     private final ConfigurationFile messageLoader = new MessageLoader(this);
@@ -81,13 +83,16 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private final CategoryManager categoryManager = new ZCategoryManager(this, ruleLoaderRegistry);
     private final YamlUpdater yamlUpdater = new YamlUpdater(this);
     private final MigrationRegistry migrationRegistry = new ZMigrationRegistry(this);
+    private final PermissionRegistrar permissionRegistrar = new PermissionRegistrar(this);
+    private final ItemContentManager itemContentManager = new ZItemContentManager();
+    private final MessageHelper messageHelper = new MessageHelper();
+    private LocaleHelper localeHelper;
     private InventoriesLoader inventoriesLoader;
     private ChatSearchListener chatSearchListener;
     private DiscordWebhookService discordWebhookService;
     private VersionChecker versionChecker;
     private boolean isEnabled = false;
     private PlatformScheduler platformScheduler;
-    private final PermissionRegistrar permissionRegistrar = new PermissionRegistrar(this);
     private AuctionClusterBridge auctionClusterBridge = new LocalAuctionClusterBridge();
     private OfflinePermission offlinePermission = new EmptyOfflinePermission();
 
@@ -242,6 +247,28 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
             this.offlinePermission = new LuckPermsOfflinePermission();
             this.getLogger().info("LuckPerms has been enabled successfully!");
         }
+
+        this.registerItemContentProviders();
+    }
+
+    private void registerItemContentProviders() {
+        // Default vanilla shulker box provider (priority 100)
+        this.itemContentManager.registerProvider(new VanillaShulkerContentProvider());
+
+        if (isEnable(Plugins.AXSHULKERS)) {
+            this.registerOptionalItemContentProvider("fr.maxlego08.zauctionhouse.hooks.axshulkers.AxShulkersContentProvider", "AxShulkers");
+        }
+    }
+
+    private void registerOptionalItemContentProvider(String className, String name) {
+        try {
+            var clazz = Class.forName(className);
+            var provider = (fr.maxlego08.zauctionhouse.api.hooks.itemcontent.ItemContentProvider) clazz.getDeclaredConstructor().newInstance();
+            this.itemContentManager.registerProvider(provider);
+            this.getLogger().info(name + " item content provider registered.");
+        } catch (Exception exception) {
+            this.getLogger().log(Level.WARNING, "Failed to register " + name + " item content provider.", exception);
+        }
     }
 
     private void registerCustomItemLoaders() {
@@ -351,17 +378,9 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
         return commandManager;
     }
 
-    private final MessageHelper messageHelper = new MessageHelper();
-
     @Override
     public void sendMessage(org.bukkit.command.CommandSender sender, Message message, Object... args) {
         messageHelper.send(this, sender, message, args);
-    }
-
-    private static class MessageHelper extends fr.maxlego08.zauctionhouse.utils.MessageUtils {
-        void send(AuctionPlugin plugin, org.bukkit.command.CommandSender sender, Message message, Object... args) {
-            this.message(plugin, sender, message, args);
-        }
     }
 
     @Override
@@ -407,6 +426,11 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     @Override
     public MigrationRegistry getMigrationRegistry() {
         return this.migrationRegistry;
+    }
+
+    @Override
+    public ItemContentManager getItemContentManager() {
+        return this.itemContentManager;
     }
 
     @Override
@@ -575,5 +599,11 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
     protected Plugin getPlugin(Plugins plugin) {
         return Bukkit.getPluginManager().getPlugin(plugin.getName());
+    }
+
+    private static class MessageHelper extends fr.maxlego08.zauctionhouse.utils.MessageUtils {
+        void send(AuctionPlugin plugin, org.bukkit.command.CommandSender sender, Message message, Object... args) {
+            this.message(plugin, sender, message, args);
+        }
     }
 }

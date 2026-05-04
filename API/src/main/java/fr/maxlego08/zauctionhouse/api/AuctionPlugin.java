@@ -5,6 +5,7 @@ import fr.maxlego08.zauctionhouse.api.cluster.AuctionClusterBridge;
 import fr.maxlego08.zauctionhouse.api.command.CommandManager;
 import fr.maxlego08.zauctionhouse.api.configuration.Configuration;
 import fr.maxlego08.zauctionhouse.api.economy.EconomyManager;
+import fr.maxlego08.zauctionhouse.api.hooks.itemcontent.ItemContentManager;
 import fr.maxlego08.zauctionhouse.api.hooks.permission.OfflinePermission;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.migration.MigrationRegistry;
@@ -117,6 +118,11 @@ public interface AuctionPlugin extends Plugin {
      * @param auctionClusterBridge cluster bridge implementation to use
      */
     void setAuctionClusterBridge(AuctionClusterBridge auctionClusterBridge);
+
+    /**
+     * @return manager for item content providers (shulker box contents, custom containers, etc.)
+     */
+    ItemContentManager getItemContentManager();
 
     /**
      * @return helper used to evaluate permissions for offline players

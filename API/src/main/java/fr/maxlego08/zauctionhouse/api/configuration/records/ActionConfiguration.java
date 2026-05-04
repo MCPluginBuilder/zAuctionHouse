@@ -83,15 +83,19 @@ public record ActionConfiguration(
         }
     }
 
-    public record SellingConfiguration(boolean openInventory) {
+    public record SellingConfiguration(boolean openInventory, boolean freeSpace) {
         public static SellingConfiguration of(AuctionPlugin plugin, FileConfiguration configuration) {
-            return new SellingConfiguration(configuration.getBoolean("action.selling-item.open-inventory"));
+            return new SellingConfiguration(
+                    configuration.getBoolean("action.selling-item.open-inventory"),
+                    configuration.getBoolean("action.selling-item.player-inventory-must-have-free-space", true));
         }
     }
 
-    public record ExpiredConfiguration(boolean openInventory) {
+    public record ExpiredConfiguration(boolean openInventory, boolean freeSpace) {
         public static ExpiredConfiguration of(AuctionPlugin plugin, FileConfiguration configuration) {
-            return new ExpiredConfiguration(configuration.getBoolean("action.remove-expired-item.open-inventory"));
+            return new ExpiredConfiguration(
+                    configuration.getBoolean("action.remove-expired-item.open-inventory"),
+                    configuration.getBoolean("action.remove-expired-item.player-inventory-must-have-free-space", true));
         }
     }
 }

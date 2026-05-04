@@ -34,7 +34,8 @@ public enum Plugins {
     ADVANCEDITEMS("AdvancedItems"),
     CUSTOMCRAFTING("CustomCrafting"),
     ECOITEMS("EcoItems"),
-    ZELAUCTION("ZelAuction")
+    ZELAUCTION("ZelAuction"),
+    AXSHULKERS("AxShulkers")
     ;
 
 	private final String name;

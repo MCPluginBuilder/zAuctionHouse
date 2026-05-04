@@ -261,7 +261,7 @@ not-enough-money: "<error>Vous n'avez pas assez d'argent pour acheter ceci."
 
 # Affiché lorsque l'inventaire du joueur est plein (si la vérification d'espace est activée).
 # Placeholders disponibles: aucun
-not-enough-space: "<error>Vous n'avez pas assez de place dans votre inventaire pour acheter cet item."
+not-enough-space: "<error>Vous n'avez pas assez de place dans votre inventaire."
 
 # Affiché lorsque le prix de vente dépasse le maximum autorisé.
 # Placeholders disponibles:
@@ -578,3 +578,5 @@ search-cleared: "<#8a8a8a>Recherche effacée."
 search-no-results: "<#8a8a8a>Aucun objet trouvé pour <#ffffff>%query%<#8a8a8a>."
 search-searching: "<#8a8a8a>Recherche de <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "Rechercher des objets dans l'hôtel des ventes"
+
+remove-all-items: "#e6fff3Vous avez recupere <white>%amount%<#e6fff3> item(s)."

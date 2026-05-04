@@ -71,3 +71,20 @@ items:
     item:
       material: BARRIER
       name: '#ff0000&nNo items found'
+
+  #---------------------------------------------------------------------------
+  # REMOVE ALL BUTTON
+  #---------------------------------------------------------------------------
+  # Retrieves all purchased items at once (if inventory space allows).
+
+  remove-all:
+    type: ZAUCTIONHOUSE_REMOVE_ALL_PURCHASED
+    is-permanent: true
+    slot: 47
+    item:
+      material: CHEST
+      name: "#2CCED2<bold>Retrieve All"
+      lore:
+        - "#92ffffRetrieve all purchased items."
+        - ""
+        - "#8c8c8c• #2CCED2Click #92ffffto retrieve all"

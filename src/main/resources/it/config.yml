@@ -799,6 +799,10 @@ action:
     # Se true, riapre l'inventario degli oggetti scaduti dopo il ritiro
     open-inventory: true
 
+    # Se true, il giocatore deve avere spazio libero nell'inventario per ritirare l'oggetto
+    # Se false e non c'è spazio disponibile, l'oggetto verrà lanciato a terra
+    player-inventory-must-have-free-space: true
+
   # Comportamento durante l'acquisto degli oggetti
   purchased-item:
     # Se true, gli oggetti acquistati vengono dati immediatamente all'inventario dell'acquirente
@@ -842,6 +846,10 @@ action:
   selling-item:
     # Se true, riapre l'inventario degli oggetti in vendita dopo il ritiro
     open-inventory: true
+
+    # Se true, il giocatore deve avere spazio libero nell'inventario per ritirare l'oggetto
+    # Se false e non c'è spazio disponibile, l'oggetto verrà lanciato a terra
+    player-inventory-must-have-free-space: true
 
 #=============================================================================
 # CONFIGURAZIONE DELL'AUTO-RISCOSSIONE

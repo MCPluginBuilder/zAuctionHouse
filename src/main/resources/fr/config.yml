@@ -798,6 +798,10 @@ action:
     # Si true, rouvre l'inventaire des items expirés après récupération
     open-inventory: true
 
+    # Si true, le joueur doit avoir de la place dans son inventaire pour récupérer l'item
+    # Si false et pas de place disponible, l'item sera lâché au sol
+    player-inventory-must-have-free-space: true
+
   # Comportement lors de l'achat d'items
   purchased-item:
     # Si true, les items achetés sont immédiatement donnés à l'inventaire de l'acheteur
@@ -841,6 +845,10 @@ action:
   selling-item:
     # Si true, rouvre l'inventaire des items en vente après récupération
     open-inventory: true
+
+    # Si true, le joueur doit avoir de la place dans son inventaire pour récupérer l'item
+    # Si false et pas de place disponible, l'item sera lâché au sol
+    player-inventory-must-have-free-space: true
 
 #=============================================================================
 # CONFIGURATION DE L'AUTO-RÉCLAMATION

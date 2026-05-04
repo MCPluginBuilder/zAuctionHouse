@@ -11,6 +11,7 @@ import fr.maxlego08.zauctionhouse.api.event.events.remove.AuctionPreRemovePurcha
 import fr.maxlego08.zauctionhouse.api.item.Item;
 import fr.maxlego08.zauctionhouse.api.item.ItemStatus;
 import fr.maxlego08.zauctionhouse.api.item.StorageType;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.services.AuctionRemoveService;
 import fr.maxlego08.zauctionhouse.api.services.result.RemoveFailReason;
 import fr.maxlego08.zauctionhouse.api.services.result.RemoveResult;
@@ -69,6 +70,12 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
         var manager = this.plugin.getAuctionManager();
         var logger = this.plugin.getLogger();
 
+        var sellingConfig = this.plugin.getConfiguration().getActions().selling();
+        if (sellingConfig.freeSpace() && !item.canReceiveItem(player)) {
+            message(this.plugin, player, Message.NOT_ENOUGH_SPACE);
+            return CompletableFuture.completedFuture(RemoveResult.failure("Not enough space", RemoveFailReason.INSUFFICIENT_SPACE));
+        }
+
         if (item.isExpired()) {
             logger.info("Item expired (Remove Selling)");
             manager.clearPlayerCache(player, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_LISTED);
@@ -97,6 +104,12 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
         var manager = this.plugin.getAuctionManager();
         var logger = this.plugin.getLogger();
 
+        var expiredConfig = this.plugin.getConfiguration().getActions().expired();
+        if (expiredConfig.freeSpace() && !item.canReceiveItem(player)) {
+            message(this.plugin, player, Message.NOT_ENOUGH_SPACE);
+            return CompletableFuture.completedFuture(RemoveResult.failure("Not enough space", RemoveFailReason.INSUFFICIENT_SPACE));
+        }
+
         if (item.isExpired()) {
             logger.info("Item expired (Remove Expired)");
             manager.clearPlayerCache(player, PlayerCacheKey.ITEMS_EXPIRED);
@@ -124,6 +137,12 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
 
         var manager = this.plugin.getAuctionManager();
         var logger = this.plugin.getLogger();
+
+        var purchasedConfig = this.plugin.getConfiguration().getActions().purchased();
+        if (purchasedConfig.freeSpace() && !item.canReceiveItem(player)) {
+            message(this.plugin, player, Message.NOT_ENOUGH_SPACE);
+            return CompletableFuture.completedFuture(RemoveResult.failure("Not enough space", RemoveFailReason.INSUFFICIENT_SPACE));
+        }
 
         if (item.isExpired()) {
             logger.info("Item expired (Remove Purchased)");

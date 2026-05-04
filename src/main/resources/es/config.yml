@@ -799,6 +799,10 @@ action:
     # Si es true, reabre el inventario de objetos caducados despues de la retirada
     open-inventory: true
 
+    # Si es true, el jugador debe tener espacio libre en su inventario para retirar el objeto
+    # Si es false y no hay espacio disponible, el objeto se tirara al suelo
+    player-inventory-must-have-free-space: true
+
   # Comportamiento durante la compra de los objetos
   purchased-item:
     # Si es true, los objetos comprados se dan inmediatamente al inventario del comprador
@@ -842,6 +846,10 @@ action:
   selling-item:
     # Si es true, reabre el inventario de objetos en venta despues de la retirada
     open-inventory: true
+
+    # Si es true, el jugador debe tener espacio libre en su inventario para retirar el objeto
+    # Si es false y no hay espacio disponible, el objeto se tirara al suelo
+    player-inventory-must-have-free-space: true
 
 #=============================================================================
 # CONFIGURACION DEL AUTO-RECLAMO

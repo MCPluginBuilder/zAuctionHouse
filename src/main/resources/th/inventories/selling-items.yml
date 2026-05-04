@@ -72,3 +72,15 @@ items:
     item:
       material: BARRIER
       name: '#ff0000&nไม่พบไอเทมที่กำลังขาย'
+
+  remove-all:
+    type: ZAUCTIONHOUSE_REMOVE_ALL_SELLING
+    is-permanent: true
+    slot: 47
+    item:
+      material: CHEST
+      name: "#2CCED2<bold>Retrieve All"
+      lore:
+        - "#92ffffRetrieve all listed items."
+        - ""
+        - "#8c8c8c• #2CCED2Click #92ffffto retrieve all"
