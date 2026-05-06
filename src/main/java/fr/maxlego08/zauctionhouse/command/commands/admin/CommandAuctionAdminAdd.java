@@ -68,6 +68,10 @@ public class CommandAuctionAdminAdd extends VCommand {
 
         BigDecimal price = number;
         AuctionEconomy economy = plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION);
+        if (economy == null) {
+            message(plugin, admin, Message.SELL_ERROR_DEFAULT_ECONOMY);
+            return CommandType.DEFAULT;
+        }
         ItemStack cloned = inHand.clone();
 
         removeItemInHand(admin, cloned.getAmount());

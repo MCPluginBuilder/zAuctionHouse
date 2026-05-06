@@ -794,6 +794,10 @@ action:
     # If true, reopens the expired items inventory after retrieval
     open-inventory: true
 
+    # If true, the player must have free inventory space to retrieve the item
+    # If false and no space available, the item will drop on the ground
+    player-inventory-must-have-free-space: true
+
   # Behavior when purchasing items
   purchased-item:
     # If true, purchased items are immediately given to the buyer's inventory
@@ -837,6 +841,10 @@ action:
   selling-item:
     # If true, reopens the selling items inventory after retrieval
     open-inventory: true
+
+    # If true, the player must have free inventory space to retrieve the item
+    # If false and no space available, the item will drop on the ground
+    player-inventory-must-have-free-space: true
 
 #=============================================================================
 # AUTO-CLAIM CONFIGURATION

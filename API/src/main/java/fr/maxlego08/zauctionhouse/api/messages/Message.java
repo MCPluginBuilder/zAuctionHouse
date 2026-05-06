@@ -52,6 +52,7 @@ public enum Message {
     SELL_ERROR_AIR("<error>Are you stupid ? You can't sell air !"),
     SELL_ERROR_CHANGE("<error>The item in your hand has changed, sale cancelled."),
     SELL_ERROR_ECONOMY("<error>Unable to find the economy <white>%name%<error>."),
+    SELL_ERROR_DEFAULT_ECONOMY("<error>No default economy is configured. Please contact an administrator."),
     SELL_INVENTORY_EMPTY("<error>You must place items in the inventory before confirming."),
     SELL_INVENTORY_CANCELLED("<error>You cancelled the sale, your items have been returned."),
     SELL_ITEMS_CLEARED("<success>Selected items have been cleared."),
@@ -81,7 +82,7 @@ public enum Message {
     ITEM_BOUGHT_BUYER("#e6fff3You have just bought %items% #e6fff3for #92bed8%price%#e6fff3."),
 
     NOT_ENOUGH_MONEY("<error>You don’t have enough money to buy this."),
-    NOT_ENOUGH_SPACE("<error>You don't have enough space in your inventory to buy this item."),
+    NOT_ENOUGH_SPACE("<error>You don't have enough space in your inventory."),
 
     PRICE_TOO_HIGH("<error>You cannot sell for more than <white>%max-price%<error>."),
     PRICE_TOO_LOW("<error>You cannot sell for less than <white>%min-price%<error>."),
@@ -161,7 +162,9 @@ public enum Message {
     SEARCH_NO_RESULTS("<#8a8a8a>No items found for <#ffffff>%query%<#8a8a8a>."),
     SEARCH_SEARCHING("<#8a8a8a>Searching for <#ffffff>%query%<#8a8a8a>..."),
 
-    COMMAND_DESCRIPTION_AUCTION_SEARCH("Search for items in the auction house");
+    COMMAND_DESCRIPTION_AUCTION_SEARCH("Search for items in the auction house"),
+
+    REMOVE_ALL_ITEMS("#e6fff3You have retrieved <white>%amount%<#e6fff3> item(s).");
 
     private AuctionPlugin plugin;
     private List<AuctionMessage> messages = new ArrayList<>();

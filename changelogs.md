@@ -1,4 +1,22 @@
-# 4.0.0.6 (unreleased)
+# 4.0.0.7 (unreleased)
+
+# 4.0.0.6
+
+- **Added** `ZAUCTIONHOUSE_COMBINED_ITEMS` button - combines selling, expired, and purchased items into a single paginated view. Each source is individually togglable via `include-selling`, `include-expired`, and `include-purchased`. Click actions automatically adapt to the item's storage type (cancel listing, claim expired, claim purchased). Each item type uses its own lore configuration from `config.yml`
+- **Fixed** Item duplication exploit in multi-server (Redis) setups - removing a listing on one server and claiming the expired item could leave a ghost entry on the original server, allowing the item to be claimed again after natural expiration
+- **Fixed** `ItemRemovedListener` (Redis addon) - removed fragile DB state validation that rejected removal messages due to race conditions, added safety-net cleanup across all storage types
+- **Fixed** `ItemStatusListener` (Redis addon) - status change propagation now searches across all storage types (LISTED, EXPIRED, PURCHASED) instead of only LISTED
+- **Fixed** `ExpireService` - added guard against re-expiring items already deleted/claimed on another server
+- **Added** Redis Sentinel support (Redis addon) - enables high-availability Redis setups with automatic master discovery and failover. Configure `mode: "sentinel"` in `config.yml` with sentinel nodes. Fully backward compatible, existing standalone configurations work without changes
+- **Fixed** `NullPointerException` when default economy is not configured - `/ah sell` and all sell-related buttons now display an error message instead of crashing. Added startup validation with prominent warnings in console when a default economy is missing from `economies.yml`
+- **Fixed** Incorrect economy type names in `economies.yml` comments - `COINS_ENGINE` and `PLAYER_POINTS` did not match the actual CurrenciesAPI enum values (`COINSENGINE`, `PLAYERPOINTS`), causing these economy types to silently fail to load when users followed the documented names
+- **Added** All permissions are now programmatically registered in Spigot on startup and reload. Includes static permissions (use, sell, admin, etc.), and dynamic permissions from configuration (listing limits, expiration tiers, tax bypass/reductions, economy access, inventory commands, cooldown bypass). All permissions are grouped under the `zauctionhouse.*` wildcard
+- **Fixed** Items dropping on the ground when claiming expired, purchased, or selling items with a full inventory - items now stay in their storage when the player's inventory is full. Added `player-inventory-must-have-free-space` config option under `remove-expired-item` and `selling-item` sections (enabled by default)
+- **Added** `ZAUCTIONHOUSE_REMOVE_ALL_EXPIRED`, `ZAUCTIONHOUSE_REMOVE_ALL_SELLING`, `ZAUCTIONHOUSE_REMOVE_ALL_PURCHASED` buttons - allows players to retrieve all items at once from expired, selling, and purchased inventories. Items are given one by one and stops when inventory is full (if `player-inventory-must-have-free-space` is enabled)
+- **Added** `ItemContentProvider` API - extensible system for displaying the contents of container items (shulker boxes, custom containers from plugins). External plugins can register their own providers via `AuctionPlugin.getItemContentManager().registerProvider()`
+- **Added** AxShulkers hook - displays the contents of shulker boxes managed by the AxShulkers plugin in the item content viewer. AxShulkers stores shulker contents externally instead of in vanilla NBT, so this hook is required to view their contents
+- **Fixed** Seller not receiving money in multi-server (Redis) setups when the buyer is on a different server - the plugin tried to deposit money locally on the buyer's server where the seller's economy account may not exist. Money is now deferred to `PENDING` status in distributed environments and claimed by the seller on their own server via `/ah claim` or auto-claim on join
+- **Added** `AuctionClusterBridge.isDistributed()` - allows cluster bridge implementations to signal a multi-server environment so the plugin can adapt its behavior (e.g., defer deposits instead of executing them locally)
 
 # 4.0.0.5
 

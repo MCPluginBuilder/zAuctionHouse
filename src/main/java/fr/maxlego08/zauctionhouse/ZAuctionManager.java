@@ -531,8 +531,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             openMainAuction(player, getCache(player).get(PlayerCacheKey.CURRENT_PAGE, 1));
         } else {
             this.plugin.getScheduler().runNextTick(w -> {
-                if (player.isOnline())
-                    player.closeInventory();
+                if (player.isOnline()) player.closeInventory();
             });
         }
 
@@ -564,8 +563,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             this.updateInventory(player);
         } else {
             this.plugin.getScheduler().runNextTick(w -> {
-                if (player.isOnline())
-                    player.closeInventory();
+                if (player.isOnline()) player.closeInventory();
             });
         }
 
@@ -594,8 +592,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             this.updateInventory(player);
         } else {
             this.plugin.getScheduler().runNextTick(w -> {
-                if (player.isOnline())
-                    player.closeInventory();
+                if (player.isOnline()) player.closeInventory();
             });
         }
 
@@ -624,8 +621,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             this.updateInventory(player);
         } else {
             this.plugin.getScheduler().runNextTick(w -> {
-                if (player.isOnline())
-                    player.closeInventory();
+                if (player.isOnline()) player.closeInventory();
             });
         }
 
@@ -766,7 +762,13 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
 
         // On donne l'argent au vendeur
         TransactionStatus transactionStatus;
-        if ((!seller.isOnline() && auctionEconomy.mustBeOnline()) || !auctionEconomy.isAutoClaim()) {
+        var clusterBridge = this.plugin.getAuctionClusterBridge();
+        boolean sellerOnThisServer = seller.isOnline();
+        boolean deferDeposit = !auctionEconomy.isAutoClaim()
+                || (!sellerOnThisServer && auctionEconomy.mustBeOnline())
+                || (!sellerOnThisServer && clusterBridge.isDistributed());
+
+        if (deferDeposit) {
 
             transactionStatus = TransactionStatus.PENDING;
         } else {
@@ -839,8 +841,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             openMainAuction(player, cache.get(PlayerCacheKey.CURRENT_PAGE, 1));
         } else {
             this.plugin.getScheduler().runNextTick(w -> {
-                if (player.isOnline())
-                    player.closeInventory();
+                if (player.isOnline()) player.closeInventory();
             });
         }
 
@@ -890,26 +891,27 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         // Wait for the sorted cache to be rebuilt before updating inventories,
         // otherwise players get stale data cached from a dirty sorted cache
         this.sortedItemsCache.ensureCacheValidAsync().thenRun(() -> {
-            this.plugin.getScheduler().runNextTick(w -> {
-                for (Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
+            for (Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
 
-                    if (onlinePlayer == ignoredPlayer) continue;
+                if (onlinePlayer == ignoredPlayer) return;
+
+                this.plugin.getScheduler().runAtEntity(onlinePlayer, w -> {
 
                     var topInventory = CompatibilityUtil.getTopInventory(onlinePlayer);
-                    if (topInventory == null) continue;
+                    if (topInventory == null) return;
 
                     var holder = topInventory.getHolder();
                     if (holder instanceof InventoryEngine inventoryEngine) {
                         var buttons = inventoryEngine.getMenuInventory().getButtons(ListedItemsButton.class);
-                        if (buttons.isEmpty()) continue;
+                        if (buttons.isEmpty()) return;
 
                         var listedItemsButton = buttons.getFirst();
                         listedItemsButton.updateInventory(onlinePlayer, inventoryEngine, item, added, this);
                     }
 
                     if (!added) removeFromCache(onlinePlayer, item);
-                }
-            });
+                });
+            }
         });
     }
 
@@ -1020,5 +1022,109 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         cache.remove(PlayerCacheKey.ITEMS_LISTED);
 
         message(player, Message.SEARCH_CLEARED);
+    }
+
+    @Override
+    public void removeAllExpiredItems(Player player) {
+        var configuration = this.plugin.getConfiguration();
+        var storageManager = this.plugin.getStorageManager();
+        var freeSpace = configuration.getActions().expired().freeSpace();
+
+        var items = new ArrayList<>(getExpiredItems(player));
+        if (items.isEmpty()) return;
+
+        int given = 0;
+        for (Item item : items) {
+            if (freeSpace && !item.canReceiveItem(player)) break;
+
+            removeItem(StorageType.EXPIRED, item);
+            storageManager.updateItem(item, StorageType.DELETED);
+            giveItem(player, item);
+            callEvent(new AuctionRemoveExpiredItemEvent(item, player));
+            logItemAction(LogType.REMOVE_EXPIRED, item, player, null, "removed_expired_item_bulk");
+            given++;
+        }
+
+        if (given > 0) {
+            clearPlayerCache(player, PlayerCacheKey.ITEMS_EXPIRED);
+            message(this.plugin, player, Message.REMOVE_ALL_ITEMS, "%amount%", String.valueOf(given));
+        }
+
+        if (configuration.getActions().expired().openInventory()) {
+            updateInventory(player);
+        } else {
+            this.plugin.getScheduler().runNextTick(w -> {
+                if (player.isOnline()) player.closeInventory();
+            });
+        }
+    }
+
+    @Override
+    public void removeAllSellingItems(Player player) {
+        var configuration = this.plugin.getConfiguration();
+        var storageManager = this.plugin.getStorageManager();
+        var freeSpace = configuration.getActions().selling().freeSpace();
+        var clusterBridge = this.plugin.getAuctionClusterBridge();
+
+        var items = new ArrayList<>(getPlayerSellingItems(player));
+        if (items.isEmpty()) return;
+
+        int given = 0;
+        for (Item item : items) {
+            if (item.getStatus() != ItemStatus.AVAILABLE) continue;
+            if (freeSpace && !item.canReceiveItem(player)) break;
+
+            item.setStatus(ItemStatus.DELETED);
+            removeItem(StorageType.LISTED, item);
+            updateListedItems(item, false, player);
+            storageManager.updateItem(item, StorageType.DELETED);
+            giveItem(player, item);
+            clusterBridge.removeItem(item, StorageType.LISTED);
+            callEvent(new AuctionRemoveListedItemEvent(item, player));
+            logItemAction(LogType.REMOVE_SELLING, item, player, null, "removed_selling_item_bulk");
+            given++;
+        }
+
+        if (given > 0) {
+            clearPlayerCache(player, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_EXPIRED);
+            message(this.plugin, player, Message.REMOVE_ALL_ITEMS, "%amount%", String.valueOf(given));
+        }
+
+        updateInventory(player);
+    }
+
+    @Override
+    public void removeAllPurchasedItems(Player player) {
+        var configuration = this.plugin.getConfiguration();
+        var storageManager = this.plugin.getStorageManager();
+        var freeSpace = configuration.getActions().purchased().freeSpace();
+
+        var items = new ArrayList<>(getPurchasedItems(player));
+        if (items.isEmpty()) return;
+
+        int given = 0;
+        for (Item item : items) {
+            if (freeSpace && !item.canReceiveItem(player)) break;
+
+            removeItem(StorageType.PURCHASED, item);
+            storageManager.updateItem(item, StorageType.DELETED);
+            giveItem(player, item);
+            callEvent(new AuctionRemovePurchasedItemEvent(item, player));
+            logItemAction(LogType.REMOVE_PURCHASED, item, player, item.getSellerUniqueId(), "removed_purchased_item_bulk");
+            given++;
+        }
+
+        if (given > 0) {
+            clearPlayerCache(player, PlayerCacheKey.ITEMS_PURCHASED);
+            message(this.plugin, player, Message.REMOVE_ALL_ITEMS, "%amount%", String.valueOf(given));
+        }
+
+        if (configuration.getActions().purchased().openInventory()) {
+            updateInventory(player);
+        } else {
+            this.plugin.getScheduler().runNextTick(w -> {
+                if (player.isOnline()) player.closeInventory();
+            });
+        }
     }
 }

@@ -125,6 +125,10 @@ sell-error-change: "<error>El objeto en tu mano ha cambiado, venta cancelada."
 #   %name% - Nombre de la economia especificada
 sell-error-economy: "<error>No se puede encontrar la economia <white>%name%<error>."
 
+# Mostrado cuando no hay economia predeterminada configurada para el tipo de objeto.
+# Placeholders disponibles: ninguno
+sell-error-default-economy: "<error>No hay economia predeterminada configurada. Por favor contacta a un administrador."
+
 # Mostrado durante la confirmacion de una venta sin objetos seleccionados (inventario de venta).
 # Placeholders disponibles: ninguno
 sell-inventory-empty: "<error>Debes colocar objetos en el inventario antes de confirmar."
@@ -257,7 +261,7 @@ not-enough-money: "<error>No tienes suficiente dinero para comprar esto."
 
 # Mostrado cuando el inventario del jugador esta lleno (si la verificacion de espacio esta activada).
 # Placeholders disponibles: ninguno
-not-enough-space: "<error>No tienes suficiente espacio en tu inventario para comprar este objeto."
+not-enough-space: "<error>No tienes suficiente espacio en tu inventario."
 
 # Mostrado cuando el precio de venta supera el maximo permitido.
 # Placeholders disponibles:
@@ -574,3 +578,5 @@ search-cleared: "<#8a8a8a>Busqueda borrada."
 search-no-results: "<#8a8a8a>No se encontraron objetos para <#ffffff>%query%<#8a8a8a>."
 search-searching: "<#8a8a8a>Buscando <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "Buscar objetos en la casa de subastas"
+
+remove-all-items: "#e6fff3Has retirado <white>%amount%<#e6fff3> objeto(s)."

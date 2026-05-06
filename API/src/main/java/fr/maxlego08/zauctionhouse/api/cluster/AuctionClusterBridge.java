@@ -79,4 +79,16 @@ public interface AuctionClusterBridge {
      * @return future completing after the deletion is processed
      */
     CompletableFuture<Void> removeItem(Item item, StorageType storageType);
+
+    /**
+     * Indicates whether this bridge operates in a distributed (multi-server) environment.
+     * When {@code true}, money deposits to offline sellers should be deferred to the claim
+     * system rather than executed locally, because the seller may have never joined this server
+     * and the economy plugin may not recognize their account.
+     *
+     * @return {@code true} if the cluster spans multiple servers, {@code false} for single-server
+     */
+    default boolean isDistributed() {
+        return false;
+    }
 }

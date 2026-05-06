@@ -60,8 +60,7 @@ public class SellConfirmButton extends Button {
         BigDecimal price = cache.get(PlayerCacheKey.SELL_PRICE, BigDecimal.ZERO);
         AuctionEconomy defaultEconomy = this.plugin.getEconomyManager().getDefaultEconomy(ItemType.AUCTION);
         if (defaultEconomy == null) {
-            this.plugin.getLogger().severe("No default economy configured for AUCTION items");
-            this.plugin.getAuctionManager().message(player, Message.SELL_INVENTORY_EMPTY);
+            this.plugin.getAuctionManager().message(player, Message.SELL_ERROR_DEFAULT_ECONOMY);
             return;
         }
         AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, defaultEconomy);

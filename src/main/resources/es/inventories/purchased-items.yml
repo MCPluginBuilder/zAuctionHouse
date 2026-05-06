@@ -71,3 +71,15 @@ items:
     item:
       material: BARRIER
       name: '#ff0000&nNingun objeto encontrado'
+
+  remove-all:
+    type: ZAUCTIONHOUSE_REMOVE_ALL_PURCHASED
+    is-permanent: true
+    slot: 47
+    item:
+      material: CHEST
+      name: "#2CCED2<bold>Retirar todo"
+      lore:
+        - "#92ffffRetirar todos los objetos comprados."
+        - ""
+        - "#8c8c8c• #2CCED2Clic #92ffffpara retirar todo"

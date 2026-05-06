@@ -54,7 +54,13 @@ public class CommandAuctionSell extends VCommandArgument<CommandSellArguments> {
         int amount = argAsInteger(CommandSellArguments.AMOUNT, itemStack.getAmount());
         amount = amount > itemStack.getAmount() ? itemStack.getAmount() : amount <= 0 ? 1 : amount;
 
-        String economyName = argAsString(CommandSellArguments.ECONOMY, economyManager.getDefaultEconomy(ItemType.AUCTION).getName());
+        AuctionEconomy defaultEconomy = economyManager.getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) {
+            message(plugin, this.player, Message.SELL_ERROR_DEFAULT_ECONOMY);
+            return CommandType.DEFAULT;
+        }
+
+        String economyName = argAsString(CommandSellArguments.ECONOMY, defaultEconomy.getName());
         if (economyName == null) return CommandType.DEFAULT;
 
         Optional<AuctionEconomy> optional = economyManager.getEconomy(economyName);

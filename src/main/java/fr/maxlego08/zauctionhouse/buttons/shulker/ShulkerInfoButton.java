@@ -5,9 +5,9 @@ import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.cache.PlayerCacheKey;
+import fr.maxlego08.zauctionhouse.api.hooks.itemcontent.ItemContentManager;
 import fr.maxlego08.zauctionhouse.api.item.Item;
 import fr.maxlego08.zauctionhouse.api.item.items.AuctionItem;
-import fr.maxlego08.zauctionhouse.utils.ShulkerHelper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -32,6 +32,7 @@ public class ShulkerInfoButton extends Button {
 
     @Override
     public @Nullable ItemStack getCustomItemStack(@NotNull Player player, boolean useCache, @NotNull Placeholders placeholders) {
+        var contentManager = this.plugin.getItemContentManager();
         var cache = this.plugin.getAuctionManager().getCache(player);
         Item item = cache.get(PlayerCacheKey.ITEM_SHOW);
 
@@ -39,22 +40,23 @@ public class ShulkerInfoButton extends Button {
             return super.getCustomItemStack(player, useCache, placeholders);
         }
 
-        List<ItemStack> shulkers = ShulkerHelper.getShulkerBoxes(auctionItem.getItemStacks());
-        if (shulkers.isEmpty()) {
+        List<ItemStack> containers = contentManager.getContainers(auctionItem.getItemStacks());
+        if (containers.isEmpty()) {
             return super.getCustomItemStack(player, useCache, placeholders);
         }
 
         int currentIndex = cache.get(PlayerCacheKey.SHULKER_INDEX, 0);
-        if (currentIndex < 0 || currentIndex >= shulkers.size()) {
+        if (currentIndex < 0 || currentIndex >= containers.size()) {
             currentIndex = 0;
         }
 
         registerPlaceholders(player, placeholders);
 
-        return shulkers.get(currentIndex).clone();
+        return containers.get(currentIndex).clone();
     }
 
     private void registerPlaceholders(Player player, Placeholders placeholders) {
+        var contentManager = this.plugin.getItemContentManager();
         var cache = this.plugin.getAuctionManager().getCache(player);
         Item item = cache.get(PlayerCacheKey.ITEM_SHOW);
 
@@ -64,10 +66,10 @@ public class ShulkerInfoButton extends Button {
             return;
         }
 
-        List<ItemStack> shulkers = ShulkerHelper.getShulkerBoxes(auctionItem.getItemStacks());
+        List<ItemStack> containers = contentManager.getContainers(auctionItem.getItemStacks());
         int currentIndex = cache.get(PlayerCacheKey.SHULKER_INDEX, 0);
 
         placeholders.register("shulker-current", String.valueOf(currentIndex + 1));
-        placeholders.register("shulker-total", String.valueOf(shulkers.size()));
+        placeholders.register("shulker-total", String.valueOf(containers.size()));
     }
 }

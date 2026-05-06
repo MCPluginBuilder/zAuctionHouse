@@ -8,6 +8,7 @@ import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.cache.PlayerCacheKey;
 import fr.maxlego08.zauctionhouse.api.economy.AuctionEconomy;
 import fr.maxlego08.zauctionhouse.api.item.ItemType;
+import fr.maxlego08.zauctionhouse.api.messages.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -42,7 +43,12 @@ public class SellEconomyButton extends Button {
         List<AuctionEconomy> economies = new ArrayList<>(economyManager.getEconomies());
         if (economies.isEmpty()) return;
 
-        AuctionEconomy currentEconomy = cache.get(PlayerCacheKey.SELL_ECONOMY, economyManager.getDefaultEconomy(ItemType.AUCTION));
+        AuctionEconomy defaultEconomy = economyManager.getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) {
+            this.plugin.getAuctionManager().message(player, Message.SELL_ERROR_DEFAULT_ECONOMY);
+            return;
+        }
+        AuctionEconomy currentEconomy = cache.get(PlayerCacheKey.SELL_ECONOMY, defaultEconomy);
         int currentIndex = economies.indexOf(currentEconomy);
         if (currentIndex < 0) currentIndex = 0;
 
@@ -80,7 +86,9 @@ public class SellEconomyButton extends Button {
         var cache = manager.getCache(player);
         var economyManager = this.plugin.getEconomyManager();
 
-        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, economyManager.getDefaultEconomy(ItemType.AUCTION));
+        AuctionEconomy defaultEconomy = economyManager.getDefaultEconomy(ItemType.AUCTION);
+        if (defaultEconomy == null) return menuItemStack.build(player, false, placeholders);
+        AuctionEconomy economy = cache.get(PlayerCacheKey.SELL_ECONOMY, defaultEconomy);
         BigDecimal price = cache.get(PlayerCacheKey.SELL_PRICE, BigDecimal.ZERO);
 
         placeholders.register("economy", economy.getDisplayName());
