@@ -1,5 +1,7 @@
 # 4.0.0.7 (unreleased)
 
+- **Added** `banned-rules` support for categories - allows excluding specific items from a category even if they match the inclusion rules. For example, a netherite hoe would normally appear in the "Tools" category, but if it has a specific CustomModelData (e.g., 300), it can be excluded using a banned rule. Uses the same rule types as regular rules (material, tag, lore, custom-model-data, etc.)
+
 # 4.0.0.6
 
 - **Added** `ZAUCTIONHOUSE_COMBINED_ITEMS` button - combines selling, expired, and purchased items into a single paginated view. Each source is individually togglable via `include-selling`, `include-expired`, and `include-purchased`. Click actions automatically adapt to the item's storage type (cancel listing, claim expired, claim purchased). Each item type uses its own lore configuration from `config.yml`

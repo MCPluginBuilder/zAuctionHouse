@@ -16,6 +16,7 @@ public class ZCategory implements Category {
     private final String id;
     private final String displayName;
     private final List<Rule> rules;
+    private final List<Rule> bannedRules;
     private final boolean miscellaneous;
 
     /**
@@ -24,12 +25,14 @@ public class ZCategory implements Category {
      * @param id            unique identifier
      * @param displayName   display name for menus
      * @param rules         matching rules
+     * @param bannedRules   exclusion rules
      * @param miscellaneous whether this is the fallback category
      */
-    public ZCategory(String id, String displayName, List<Rule> rules, boolean miscellaneous) {
+    public ZCategory(String id, String displayName, List<Rule> rules, List<Rule> bannedRules, boolean miscellaneous) {
         this.id = Objects.requireNonNull(id, "Category id cannot be null");
         this.displayName = displayName != null ? displayName : id;
         this.rules = rules != null ? List.copyOf(rules) : List.of();
+        this.bannedRules = bannedRules != null ? List.copyOf(bannedRules) : List.of();
         this.miscellaneous = miscellaneous;
     }
 
@@ -41,7 +44,7 @@ public class ZCategory implements Category {
      * @return new miscellaneous category
      */
     public static ZCategory miscellaneous(String id, String displayName) {
-        return new ZCategory(id, displayName, List.of(), true);
+        return new ZCategory(id, displayName, List.of(), List.of(), true);
     }
 
     @Override
@@ -60,6 +63,11 @@ public class ZCategory implements Category {
     }
 
     @Override
+    public List<Rule> getBannedRules() {
+        return bannedRules;
+    }
+
+    @Override
     public boolean isMiscellaneous() {
         return miscellaneous;
     }
@@ -68,7 +76,14 @@ public class ZCategory implements Category {
     public boolean matches(ItemRuleContext context) {
         if (context == null) return false;
 
-        // Miscellaneous category matches everything
+        // Check banned rules first: if ANY banned rule matches, exclude the item
+        for (Rule bannedRule : bannedRules) {
+            if (bannedRule.matches(context)) {
+                return false;
+            }
+        }
+
+        // Miscellaneous category matches everything (that isn't banned)
         if (miscellaneous) return true;
 
         // Regular category: match if ANY rule matches (OR logic)

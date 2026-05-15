@@ -40,6 +40,15 @@ public interface Category {
     List<Rule> getRules();
 
     /**
+     * Gets exclusion rules for this category.
+     * If an item matches any banned rule, it is excluded from this category
+     * even if it matches the inclusion rules.
+     *
+     * @return immutable list of banned rules
+     */
+    List<Rule> getBannedRules();
+
+    /**
      * Checks whether this category is the miscellaneous/fallback category.
      * The misc category matches all items that don't match any other category.
      *
