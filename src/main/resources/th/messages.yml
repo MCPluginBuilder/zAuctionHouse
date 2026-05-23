@@ -579,4 +579,23 @@ search-no-results: "<#8a8a8a>ไม่พบไอเทมสำหรับ <#
 search-searching: "<#8a8a8a>กำลังค้นหา <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "ค้นหาไอเทมใน auction house"
 
+broadcast-sell: "#e6fff3<white>%seller% <#e6fff3>เพิ่งลงขาย %items% <#e6fff3>ในราคา <#92bed8>%price%<#e6fff3>"
+broadcast-purchase: "#e6fff3<white>%buyer% <#e6fff3>เพิ่งซื้อ %items% <#e6fff3>ในราคา <#92bed8>%price%<#e6fff3>"
+
+command-description-auction-option: "จัดการตัวเลือกของคุณ"
+option-broadcast-sell-enabled: "<success>การประกาศการขายถูก<white>เปิด<success>แล้ว"
+option-broadcast-sell-disabled: "<success>การประกาศการขายถูก<white>ปิด<success>แล้ว"
+option-broadcast-purchase-enabled: "<success>การประกาศการซื้อถูก<white>เปิด<success>แล้ว"
+option-broadcast-purchase-disabled: "<success>การประกาศการซื้อถูก<white>ปิด<success>แล้ว"
+option-list-header: "<primary>ตัวเลือกของคุณ:"
+option-list-entry: "<gray>  %option% <dark_gray>> <white>%value%"
+
+command-description-auction-admin-option: "จัดการตัวเลือกผู้เล่น"
+command-description-auction-admin-option-set: "ตั้งค่าตัวเลือกผู้เล่น"
+command-description-auction-admin-option-list: "ดูรายการตัวเลือกผู้เล่น"
+command-description-auction-admin-option-reset: "รีเซ็ตตัวเลือกผู้เล่นเป็นค่าเริ่มต้น"
+admin-option-set: "<success>ตั้งค่าตัวเลือก <white>%option%<success> เป็น <white>%value%<success> สำหรับ <white>%player%<success>"
+admin-option-reset: "<success>ตัวเลือกทั้งหมดของ <white>%player%<success> ถูกรีเซ็ตเป็นค่าเริ่มต้นแล้ว"
+admin-option-list-header: "<primary>ตัวเลือกสำหรับ <white>%player%<primary>:"
+
 remove-all-items: "#e6fff3คุณได้รับไอเทมคืนจำนวน <white>%amount%<#e6fff3> ชิ้น"

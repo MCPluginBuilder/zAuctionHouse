@@ -7,6 +7,7 @@ import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.services.AuctionClaimService;
 import fr.maxlego08.zauctionhouse.api.services.AuctionExpireService;
 import fr.maxlego08.zauctionhouse.api.services.AuctionHistoryService;
+import fr.maxlego08.zauctionhouse.api.services.AuctionOptionService;
 import fr.maxlego08.zauctionhouse.api.services.AuctionPurchaseService;
 import fr.maxlego08.zauctionhouse.api.services.AuctionRemoveService;
 import fr.maxlego08.zauctionhouse.api.services.AuctionSellService;
@@ -83,6 +84,11 @@ public interface AuctionManager {
      * @return service responsible for managing sales history and notifications
      */
     AuctionHistoryService getHistoryService();
+
+    /**
+     * @return service responsible for managing player options
+     */
+    AuctionOptionService getOptionService();
 
     /**
      * Retrieves every item stored under the given bucket (listed, expired, purchased, etc.).

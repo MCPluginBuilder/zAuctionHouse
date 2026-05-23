@@ -395,6 +395,9 @@ public class SellService extends ZUtils implements AuctionSellService {
             if (discordService != null && discordService.isEnabled()) {
                 discordService.notifyItemSold(player, auctionItem);
             }
+
+            // Broadcast sell notification
+            zAuctionPlugin.getBroadcastService().broadcastSell(player, auctionItem);
         }
     }
 }

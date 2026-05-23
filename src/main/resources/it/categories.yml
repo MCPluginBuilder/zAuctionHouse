@@ -26,6 +26,13 @@
 #   - and/or          : Combinare più regole
 #   - Regole di plugin di oggetti personalizzati (itemsadder, oraxen, mmoitems, ecc.)
 #
+#   REGOLE DI ESCLUSIONE (BANNED RULES):
+#   - Puoi aggiungere una lista "banned-rules" a qualsiasi categoria
+#   - Gli oggetti che corrispondono a una banned rule sono ESCLUSI dalla categoria,
+#     anche se corrispondono alle regole di inclusione
+#   - Usa gli stessi tipi di regole delle regole normali
+#   - Utile per escludere oggetti personalizzati (es: oggetti con un CustomModelData specifico)
+#
 #   Documentazione: https://docs.groupez.dev/zauctionhouse/introduction
 #   Discord: https://discord.groupez.dev/
 #
@@ -53,6 +60,7 @@ settings:
 #   - Chiave (identificatore univoco, es: "weapons") - usato nei file di inventario
 #   - display-name: Mostrato nel GUI (supporta la formattazione MiniMessage)
 #   - rules: Lista di regole che determinano quali oggetti appartengono a questa categoria
+#   - banned-rules: (opzionale) Lista di regole per ESCLUDERE oggetti da questa categoria
 #
 # IMPORTANTE: Le chiavi delle categorie devono corrispondere al campo 'category' in inventories/categories.yml
 
@@ -277,3 +285,19 @@ misc:
 #       values:
 #         - "Edizione Speciale"
 #         - "Limitato"
+#
+# # Categoria con regole di esclusione (banned-rules)
+# # Esempio: Includere tutti gli strumenti ma escludere oggetti con un CustomModelData specifico
+# # Una zappa di netherite con CustomModelData 300 NON APPARIRA in questa categoria,
+# # ma una zappa di netherite normale si.
+# strumenti-esempio:
+#   display-name: "#aaffaaStrumenti"
+#   rules:
+#     - type: material-suffix
+#       suffixes:
+#         - "_HOE"
+#         - "_PICKAXE"
+#   banned-rules:
+#     - type: custom-model-data
+#       values:
+#         - 300

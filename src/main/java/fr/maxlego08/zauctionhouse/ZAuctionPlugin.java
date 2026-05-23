@@ -42,7 +42,9 @@ import fr.maxlego08.zauctionhouse.permissions.PermissionRegistrar;
 import fr.maxlego08.zauctionhouse.placeholder.DistantPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.LocalPlaceholder;
 import fr.maxlego08.zauctionhouse.placeholder.placeholders.GlobalPlaceholders;
+import fr.maxlego08.zauctionhouse.placeholder.placeholders.OptionPlaceholders;
 import fr.maxlego08.zauctionhouse.placeholder.placeholders.PlayerPlaceholders;
+import fr.maxlego08.zauctionhouse.services.BroadcastService;
 import fr.maxlego08.zauctionhouse.rule.ZItemRuleManager;
 import fr.maxlego08.zauctionhouse.rule.ZRuleLoaderRegistry;
 import fr.maxlego08.zauctionhouse.search.ChatSearchListener;
@@ -89,6 +91,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
     private LocaleHelper localeHelper;
     private InventoriesLoader inventoriesLoader;
     private ChatSearchListener chatSearchListener;
+    private BroadcastService broadcastService;
     private DiscordWebhookService discordWebhookService;
     private VersionChecker versionChecker;
     private boolean isEnabled = false;
@@ -131,6 +134,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
         this.registerDefaultMigrationProviders();
 
+        this.broadcastService = new BroadcastService(this);
         this.discordWebhookService = new DiscordWebhookService(this);
 
         this.chatSearchListener = new ChatSearchListener(this);
@@ -239,6 +243,7 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
         this.registerPlaceholder(PlayerPlaceholders.class);
         this.registerPlaceholder(GlobalPlaceholders.class);
+        this.registerPlaceholder(OptionPlaceholders.class);
     }
 
     private void registerHooks() {
@@ -450,6 +455,10 @@ public class ZAuctionPlugin extends JavaPlugin implements AuctionPlugin {
 
     public ChatSearchListener getChatSearchListener() {
         return this.chatSearchListener;
+    }
+
+    public BroadcastService getBroadcastService() {
+        return this.broadcastService;
     }
 
     public DiscordWebhookService getDiscordWebhookService() {

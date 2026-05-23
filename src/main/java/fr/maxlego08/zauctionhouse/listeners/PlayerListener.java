@@ -26,6 +26,9 @@ public class PlayerListener implements Listener {
         // Handle sales notification on join
         this.plugin.getAuctionManager().getHistoryService().handlePlayerJoin(player);
 
+        // Load player options
+        this.plugin.getAuctionManager().getOptionService().loadPlayerOptions(player.getUniqueId());
+
         if (player.getName().equals("Maxlego08")) {
             this.plugin.getScheduler().runLater(task -> {
                 if (player.isOnline()) {
@@ -38,6 +41,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         this.plugin.getAuctionManager().removeCache(event.getPlayer());
+        this.plugin.getAuctionManager().getOptionService().clearPlayerOptions(event.getPlayer().getUniqueId());
         this.plugin.getCommandManager().clearCooldowns(event.getPlayer().getUniqueId());
     }
 

@@ -26,6 +26,13 @@
 #   - and/or          : Combine multiple rules
 #   - Custom item plugin rules (itemsadder, oraxen, mmoitems, etc.)
 #
+#   BANNED RULES (EXCLUSION):
+#   - You can add a "banned-rules" list to any category
+#   - Items matching a banned rule are EXCLUDED from the category,
+#     even if they match the inclusion rules
+#   - Uses the same rule types as regular rules
+#   - Useful for excluding custom items (e.g., items with specific CustomModelData)
+#
 #   Documentation: https://docs.groupez.dev/zauctionhouse/introduction
 #   Discord: https://discord.groupez.dev/
 #
@@ -53,6 +60,7 @@ settings:
 #   - Key (unique identifier, e.g., "weapons") - used in inventory files
 #   - display-name: Shown in the GUI (supports MiniMessage formatting)
 #   - rules: List of rules that determine which items belong to this category
+#   - banned-rules: (optional) List of rules to EXCLUDE items from this category
 #
 # IMPORTANT: Category keys must match the 'category' field in inventories/categories.yml
 
@@ -277,3 +285,19 @@ misc:
 #       values:
 #         - "Special Edition"
 #         - "Limited"
+#
+# # Category with banned rules (exclusion)
+# # Example: Include all tools but exclude items with specific CustomModelData
+# # A netherite hoe with CustomModelData 300 will NOT appear in this category,
+# # but a normal netherite hoe will.
+# tools-example:
+#   display-name: "#aaffaaTools"
+#   rules:
+#     - type: material-suffix
+#       suffixes:
+#         - "_HOE"
+#         - "_PICKAXE"
+#   banned-rules:
+#     - type: custom-model-data
+#       values:
+#         - 300

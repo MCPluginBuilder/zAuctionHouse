@@ -164,6 +164,25 @@ public enum Message {
 
     COMMAND_DESCRIPTION_AUCTION_SEARCH("Search for items in the auction house"),
 
+    BROADCAST_SELL("#e6fff3<white>%seller% <#e6fff3>just listed %items% <#e6fff3>for <#92bed8>%price%<#e6fff3>."),
+    BROADCAST_PURCHASE("#e6fff3<white>%buyer% <#e6fff3>just purchased %items% <#e6fff3>for <#92bed8>%price%<#e6fff3>."),
+
+    COMMAND_DESCRIPTION_AUCTION_OPTION("Manage your auction house options"),
+    OPTION_BROADCAST_SELL_ENABLED("<success>Sell broadcasts have been <white>enabled<success>."),
+    OPTION_BROADCAST_SELL_DISABLED("<success>Sell broadcasts have been <white>disabled<success>."),
+    OPTION_BROADCAST_PURCHASE_ENABLED("<success>Purchase broadcasts have been <white>enabled<success>."),
+    OPTION_BROADCAST_PURCHASE_DISABLED("<success>Purchase broadcasts have been <white>disabled<success>."),
+    OPTION_LIST_HEADER("<primary>Your options:"),
+    OPTION_LIST_ENTRY("<gray>  %option% <dark_gray>> <white>%value%"),
+
+    COMMAND_DESCRIPTION_AUCTION_ADMIN_OPTION("Manage player options"),
+    COMMAND_DESCRIPTION_AUCTION_ADMIN_OPTION_SET("Set a player option"),
+    COMMAND_DESCRIPTION_AUCTION_ADMIN_OPTION_LIST("List player options"),
+    COMMAND_DESCRIPTION_AUCTION_ADMIN_OPTION_RESET("Reset a player's options to defaults"),
+    ADMIN_OPTION_SET("<success>Set option <white>%option%<success> to <white>%value%<success> for <white>%player%<success>."),
+    ADMIN_OPTION_RESET("<success>All options for <white>%player%<success> have been reset to defaults."),
+    ADMIN_OPTION_LIST_HEADER("<primary>Options for <white>%player%<primary>:"),
+
     REMOVE_ALL_ITEMS("#e6fff3You have retrieved <white>%amount%<#e6fff3> item(s).");
 
     private AuctionPlugin plugin;

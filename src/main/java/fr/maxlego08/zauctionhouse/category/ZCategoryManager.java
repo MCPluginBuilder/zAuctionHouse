@@ -139,7 +139,11 @@ public class ZCategoryManager implements CategoryManager {
             this.plugin.getLogger().warning("No rules found for category '" + id + "'");
         }
 
-        return new ZCategory(id, displayName, rules, false);
+        // Load banned rules (exclusion rules)
+        List<Map<?, ?>> bannedRulesMapList = section.getMapList("banned-rules");
+        List<Rule> bannedRules = loadRules(bannedRulesMapList);
+
+        return new ZCategory(id, displayName, rules, bannedRules, false);
     }
 
     private List<Rule> loadRules(List<Map<?, ?>> rulesMapList) {

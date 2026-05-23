@@ -19,6 +19,7 @@ import fr.maxlego08.zauctionhouse.api.item.items.AuctionItem;
 import fr.maxlego08.zauctionhouse.api.log.LogType;
 import fr.maxlego08.zauctionhouse.api.messages.Message;
 import fr.maxlego08.zauctionhouse.api.services.*;
+import fr.maxlego08.zauctionhouse.api.services.AuctionOptionService;
 import fr.maxlego08.zauctionhouse.api.tax.TaxResult;
 import fr.maxlego08.zauctionhouse.api.tax.TaxType;
 import fr.maxlego08.zauctionhouse.api.transaction.TransactionStatus;
@@ -51,6 +52,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
     private final AuctionExpireService auctionExpireService;
     private final AuctionClaimService auctionClaimService;
     private final AuctionHistoryService auctionHistoryService;
+    private final AuctionOptionService auctionOptionService;
     private final PerformanceDebug performanceDebug;
     private final SearchService searchService;
 
@@ -69,6 +71,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         this.auctionExpireService = new ExpireService(plugin, this);
         this.auctionClaimService = new ClaimService(plugin);
         this.auctionHistoryService = new HistoryService(plugin);
+        this.auctionOptionService = new OptionService(plugin);
         this.performanceDebug = new PerformanceDebug(plugin);
         this.searchService = new SearchService(plugin);
 
@@ -208,6 +211,11 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
     @Override
     public AuctionHistoryService getHistoryService() {
         return this.auctionHistoryService;
+    }
+
+    @Override
+    public AuctionOptionService getOptionService() {
+        return this.auctionOptionService;
     }
 
     @Override
@@ -853,6 +861,9 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             if (discordService != null && discordService.isEnabled()) {
                 discordService.notifyItemPurchased(player, auctionItem);
             }
+
+            // Broadcast purchase notification
+            zAuctionPlugin.getBroadcastService().broadcastPurchase(player, auctionItem);
         }
 
         return updateFuture;

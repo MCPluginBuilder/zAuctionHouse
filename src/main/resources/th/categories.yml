@@ -26,6 +26,13 @@
 #   - and/or           : รวมหลายกฎเข้าด้วยกัน
 #   - กฎปลั๊กอิน custom item ต่าง ๆ (itemsadder, oraxen, mmoitems ฯลฯ)
 #
+#   BANNED RULES (กฎยกเว้น/ห้าม):
+#   - คุณสามารถเพิ่มรายการ "banned-rules" ให้กับหมวดหมู่ใดก็ได้
+#   - ไอเท็มที่ตรงกับ banned rule จะถูก "ยกเว้น" ออกจากหมวดนั้น
+#     แม้ว่ามันจะตรงกับ rules ของหมวดนั้นก็ตาม
+#   - ใช้ประเภท rule เดียวกับ rules ปกติ
+#   - เหมาะสำหรับยกเว้นไอเท็ม custom (เช่น ไอเท็มที่มี CustomModelData เฉพาะ)
+#
 #   Documentation: https://docs.groupez.dev/zauctionhouse/introduction
 #   Discord: https://discord.groupez.dev/
 #
@@ -53,6 +60,7 @@ settings:
 #   - Key (ตัวระบุไม่ซ้ำ เช่น "weapons") - ใช้ในการอ้างอิงในไฟล์ inventory
 #   - display-name: ชื่อที่จะแสดงใน GUI (รองรับ MiniMessage)
 #   - rules: รายการกฎที่ใช้กำหนดว่าไอเท็มไหนอยู่ในหมวดนี้
+#   - banned-rules: (ไม่บังคับ) รายการกฎสำหรับ "ยกเว้น" ไอเท็มออกจากหมวดนี้
 #
 # สำคัญ: key ของหมวดหมู่ต้องตรงกับค่า 'category' ใน inventories/categories.yml
 
@@ -276,3 +284,19 @@ misc:
 #       values:
 #         - "Special Edition"
 #         - "Limited"
+#
+# # หมวดหมู่พร้อมกฎยกเว้น (banned-rules)
+# # ตัวอย่าง: รวมเครื่องมือทั้งหมด แต่ยกเว้นไอเท็มที่มี CustomModelData เฉพาะ
+# # จอบ netherite ที่มี CustomModelData 300 จะ "ไม่แสดง" ในหมวดนี้
+# # แต่จอบ netherite ธรรมดาจะแสดงตามปกติ
+# tools-example:
+#   display-name: "#aaffaaTools"
+#   rules:
+#     - type: material-suffix
+#       suffixes:
+#         - "_HOE"
+#         - "_PICKAXE"
+#   banned-rules:
+#     - type: custom-model-data
+#       values:
+#         - 300

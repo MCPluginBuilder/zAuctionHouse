@@ -5,6 +5,7 @@ import fr.maxlego08.zauctionhouse.api.configuration.commands.InventoryCommandCon
 import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleCommandConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ActionConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.AutoClaimConfiguration;
+import fr.maxlego08.zauctionhouse.api.configuration.records.BroadcastConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.CooldownConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ExpirationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SalesNotificationConfiguration;
@@ -203,6 +204,13 @@ public interface Configuration extends ConfigurationFile {
      * @return the search filter configuration
      */
     SearchFilterConfiguration getSearchFilter();
+
+    /**
+     * Gets the broadcast configuration.
+     *
+     * @return the broadcast configuration
+     */
+    BroadcastConfiguration getBroadcast();
 
     /**
      * Checks if the sell inventory is enabled.

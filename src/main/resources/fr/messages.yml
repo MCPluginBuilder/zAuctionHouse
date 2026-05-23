@@ -579,4 +579,23 @@ search-no-results: "<#8a8a8a>Aucun objet trouvé pour <#ffffff>%query%<#8a8a8a>.
 search-searching: "<#8a8a8a>Recherche de <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "Rechercher des objets dans l'hôtel des ventes"
 
+broadcast-sell: "#e6fff3<white>%seller% <#e6fff3>vient de mettre en vente %items% <#e6fff3>pour <#92bed8>%price%<#e6fff3>."
+broadcast-purchase: "#e6fff3<white>%buyer% <#e6fff3>vient d'acheter %items% <#e6fff3>pour <#92bed8>%price%<#e6fff3>."
+
+command-description-auction-option: "Gérer vos options de l'hôtel des ventes"
+option-broadcast-sell-enabled: "<success>Les diffusions de vente ont été <white>activées<success>."
+option-broadcast-sell-disabled: "<success>Les diffusions de vente ont été <white>désactivées<success>."
+option-broadcast-purchase-enabled: "<success>Les diffusions d'achat ont été <white>activées<success>."
+option-broadcast-purchase-disabled: "<success>Les diffusions d'achat ont été <white>désactivées<success>."
+option-list-header: "<primary>Vos options :"
+option-list-entry: "<gray>  %option% <dark_gray>> <white>%value%"
+
+command-description-auction-admin-option: "Gérer les options des joueurs"
+command-description-auction-admin-option-set: "Définir une option pour un joueur"
+command-description-auction-admin-option-list: "Lister les options d'un joueur"
+command-description-auction-admin-option-reset: "Réinitialiser les options d'un joueur"
+admin-option-set: "<success>Option <white>%option%<success> définie sur <white>%value%<success> pour <white>%player%<success>."
+admin-option-reset: "<success>Toutes les options de <white>%player%<success> ont été réinitialisées par défaut."
+admin-option-list-header: "<primary>Options pour <white>%player%<primary> :"
+
 remove-all-items: "#e6fff3Vous avez recupere <white>%amount%<#e6fff3> item(s)."

@@ -894,6 +894,48 @@ sales-notification:
   delay-ticks: 60
 
 #=============================================================================
+# BROADCAST CONFIGURATION
+#=============================================================================
+
+# Broadcast messages to all online players when items are listed or purchased.
+# Players can opt-out individually using /ah option.
+
+broadcast:
+  sell:
+    # If true, a message is sent to all online players when an item is listed
+    enable: false
+
+    # If true, the seller will not see the broadcast message
+    exclude-seller: true
+
+  purchase:
+    # If true, a message is sent to all online players when an item is purchased
+    enable: false
+
+    # If true, the buyer will not see the broadcast message
+    exclude-buyer: true
+
+  # Per-category message overrides (MiniMessage format).
+  # If an item belongs to a category listed here, the custom message is used
+  # instead of the default broadcast message from messages.yml.
+  # The category key must match a category ID defined in categories.yml.
+  # Available placeholders: %seller%, %buyer%, %items%, %price%, %category%
+  #
+  # Example:
+  #   category-messages:
+  #     sell:
+  #       weapons: "<red><bold>WEAPON</bold></red> <white>%seller% <yellow>listed %items% <yellow>for <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMOR</bold></blue> <white>%seller% <yellow>listed %items% <yellow>for <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>ENCHANT</bold></light_purple> <white>%seller% <yellow>listed %items% <yellow>for <gold>%price%<yellow>!"
+  #     purchase:
+  #       weapons: "<red><bold>WEAPON</bold></red> <white>%buyer% <yellow>purchased %items% <yellow>from <white>%seller% <yellow>for <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMOR</bold></blue> <white>%buyer% <yellow>purchased %items% <yellow>from <white>%seller% <yellow>for <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>ENCHANT</bold></light_purple> <white>%buyer% <yellow>purchased %items% <yellow>from <white>%seller% <yellow>for <gold>%price%<yellow>!"
+  category-messages:
+    sell: {}
+    purchase: {}
+
+#=============================================================================
 # PERFORMANCE CONFIGURATION
 #=============================================================================
 
