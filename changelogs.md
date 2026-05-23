@@ -1,6 +1,11 @@
 # 4.0.0.7 (unreleased)
 
 - **Added** `banned-rules` support for categories - allows excluding specific items from a category even if they match the inclusion rules. For example, a netherite hoe would normally appear in the "Tools" category, but if it has a specific CustomModelData (e.g., 300), it can be excluded using a banned rule. Uses the same rule types as regular rules (material, tag, lore, custom-model-data, etc.)
+- **Added** Broadcast system - sends messages to all online players when items are listed or purchased. Configurable per event type (sell/purchase) with options to exclude the seller/buyer. Supports per-category message overrides using MiniMessage format with `%seller%`, `%buyer%`, `%items%`, `%price%`, `%category%` placeholders. Disabled by default, enable in `config.yml` under `broadcast`
+- **Added** Player options system - extensible per-player preference system backed by the database. Players can toggle options via `/ah option` (opens GUI) or `/ah option <option_name> [value]` (command toggle). Options are cached in memory and only stored in the database when different from the default value. Currently supports `broadcast_sell` and `broadcast_purchase` to opt out of broadcast messages
+- **Added** Options inventory (`/ah option`) - 27-slot GUI with toggle buttons for each broadcast option, showing current status (enabled/disabled)
+- **Added** Admin option commands - `/ah admin option set <player> <option> <value>` to set options for a player, `/ah admin option list <player>` to view player options, `/ah admin option reset <player>` to reset all options to defaults
+- **Added** `%zauctionhouse_option_<option_name>%` PlaceholderAPI placeholder - returns `true`/`false` for a player's option value (e.g., `%zauctionhouse_option_broadcast_sell%`)
 
 # 4.0.0.6
 
