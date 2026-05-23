@@ -899,6 +899,40 @@ sales-notification:
   delay-ticks: 60
 
 #=============================================================================
+# CONFIGURAZIONE DELLE TRASMISSIONI
+#=============================================================================
+
+# Trasmetti messaggi a tutti i giocatori online quando vengono messi in vendita o acquistati oggetti.
+# I giocatori possono disattivarlo individualmente usando /ah option.
+
+broadcast:
+  sell:
+    enable: false
+    exclude-seller: true
+  purchase:
+    enable: false
+    exclude-buyer: true
+  # Messaggi personalizzati per categoria (formato MiniMessage).
+  # Se un oggetto appartiene a una categoria elencata qui, viene usato il messaggio
+  # personalizzato al posto del messaggio predefinito in messages.yml.
+  # La chiave della categoria deve corrispondere a un ID definito in categories.yml.
+  # Placeholder disponibili: %seller%, %buyer%, %items%, %price%, %category%
+  #
+  # Esempio:
+  #   category-messages:
+  #     sell:
+  #       weapons: "<red><bold>ARMA</bold></red> <white>%seller% <yellow>ha messo in vendita %items% <yellow>per <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMATURA</bold></blue> <white>%seller% <yellow>ha messo in vendita %items% <yellow>per <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>INCANT</bold></light_purple> <white>%seller% <yellow>ha messo in vendita %items% <yellow>per <gold>%price%<yellow>!"
+  #     purchase:
+  #       weapons: "<red><bold>ARMA</bold></red> <white>%buyer% <yellow>ha acquistato %items% <yellow>da <white>%seller% <yellow>per <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMATURA</bold></blue> <white>%buyer% <yellow>ha acquistato %items% <yellow>da <white>%seller% <yellow>per <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>INCANT</bold></light_purple> <white>%buyer% <yellow>ha acquistato %items% <yellow>da <white>%seller% <yellow>per <gold>%price%<yellow>!"
+  category-messages:
+    sell: {}
+    purchase: {}
+
+#=============================================================================
 # CONFIGURAZIONE DELLE PRESTAZIONI
 #=============================================================================
 

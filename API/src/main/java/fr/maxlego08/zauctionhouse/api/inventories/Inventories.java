@@ -97,6 +97,11 @@ public enum Inventories {
      */
     COMBINED_ITEMS("combined-items"),
 
+    /**
+     * Player options inventory.
+     */
+    OPTIONS("options"),
+
     ;
 
     private final String fileName;

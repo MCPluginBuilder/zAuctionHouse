@@ -899,6 +899,40 @@ sales-notification:
   delay-ticks: 60
 
 #=============================================================================
+# CONFIGURACION DE DIFUSION
+#=============================================================================
+
+# Difundir mensajes a todos los jugadores en linea cuando se listan o compran objetos.
+# Los jugadores pueden desactivarlo individualmente usando /ah option.
+
+broadcast:
+  sell:
+    enable: false
+    exclude-seller: true
+  purchase:
+    enable: false
+    exclude-buyer: true
+  # Mensajes personalizados por categoría (formato MiniMessage).
+  # Si un objeto pertenece a una categoría listada aquí, se usa el mensaje
+  # personalizado en lugar del mensaje por defecto de messages.yml.
+  # La clave de categoría debe coincidir con un ID definido en categories.yml.
+  # Placeholders disponibles: %seller%, %buyer%, %items%, %price%, %category%
+  #
+  # Ejemplo:
+  #   category-messages:
+  #     sell:
+  #       weapons: "<red><bold>ARMA</bold></red> <white>%seller% <yellow>puso a la venta %items% <yellow>por <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMADURA</bold></blue> <white>%seller% <yellow>puso a la venta %items% <yellow>por <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>ENCANT</bold></light_purple> <white>%seller% <yellow>puso a la venta %items% <yellow>por <gold>%price%<yellow>!"
+  #     purchase:
+  #       weapons: "<red><bold>ARMA</bold></red> <white>%buyer% <yellow>compró %items% <yellow>de <white>%seller% <yellow>por <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>ARMADURA</bold></blue> <white>%buyer% <yellow>compró %items% <yellow>de <white>%seller% <yellow>por <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>ENCANT</bold></light_purple> <white>%buyer% <yellow>compró %items% <yellow>de <white>%seller% <yellow>por <gold>%price%<yellow>!"
+  category-messages:
+    sell: {}
+    purchase: {}
+
+#=============================================================================
 # CONFIGURACION DE RENDIMIENTO
 #=============================================================================
 

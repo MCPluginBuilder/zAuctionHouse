@@ -593,6 +593,77 @@ search-searching: "<#8a8a8a>Searching for <#ffffff>%query%<#8a8a8a>..."
 command-description-auction-search: "Search for items in the auction house"
 
 #=============================================================================
+# BROADCAST MESSAGES
+#=============================================================================
+# Messages sent to all online players when items are listed or purchased.
+# Only used when broadcast is enabled in config.yml.
+# Players can opt-out using /ah option.
+
+# Broadcast when a player lists an item.
+# Available placeholders:
+#   %seller%   - Name of the seller
+#   %items%    - Item description
+#   %price%    - Sale price
+#   %category% - Item category
+broadcast-sell: "#e6fff3<white>%seller% <#e6fff3>just listed %items% <#e6fff3>for <#92bed8>%price%<#e6fff3>."
+
+# Broadcast when a player purchases an item.
+# Available placeholders:
+#   %buyer%    - Name of the buyer
+#   %seller%   - Name of the seller
+#   %items%    - Item description
+#   %price%    - Purchase price
+#   %category% - Item category
+broadcast-purchase: "#e6fff3<white>%buyer% <#e6fff3>just purchased %items% <#e6fff3>for <#92bed8>%price%<#e6fff3>."
+
+#=============================================================================
+# OPTION MESSAGES
+#=============================================================================
+# Messages for the player option system.
+
+# Command description for /ah option
+command-description-auction-option: "Manage your auction house options"
+
+# Shown when a player toggles an option.
+option-broadcast-sell-enabled: "<success>Sell broadcasts have been <white>enabled<success>."
+option-broadcast-sell-disabled: "<success>Sell broadcasts have been <white>disabled<success>."
+option-broadcast-purchase-enabled: "<success>Purchase broadcasts have been <white>enabled<success>."
+option-broadcast-purchase-disabled: "<success>Purchase broadcasts have been <white>disabled<success>."
+
+# Header for option list display.
+# Available placeholders: none
+option-list-header: "<primary>Your options:"
+
+# Format for each option entry.
+# Available placeholders:
+#   %option% - Option name
+#   %value%  - Current value
+option-list-entry: "<gray>  %option% <dark_gray>> <white>%value%"
+
+# Admin command descriptions
+command-description-auction-admin-option: "Manage player options"
+command-description-auction-admin-option-set: "Set a player option"
+command-description-auction-admin-option-list: "List player options"
+command-description-auction-admin-option-reset: "Reset a player's options to defaults"
+
+# Shown when admin sets an option for a player.
+# Available placeholders:
+#   %option% - Option name
+#   %value%  - New value
+#   %player% - Target player name
+admin-option-set: "<success>Set option <white>%option%<success> to <white>%value%<success> for <white>%player%<success>."
+
+# Shown when admin resets all options for a player.
+# Available placeholders:
+#   %player% - Target player name
+admin-option-reset: "<success>All options for <white>%player%<success> have been reset to defaults."
+
+# Header for admin option list.
+# Available placeholders:
+#   %player% - Target player name
+admin-option-list-header: "<primary>Options for <white>%player%<primary>:"
+
+#=============================================================================
 # REMOVE ALL MESSAGES
 #=============================================================================
 

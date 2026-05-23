@@ -842,6 +842,40 @@ sales-notification:
   delay-ticks: 60
 
 #=============================================================================
+# BROADCAST CONFIGURATION (การประกาศ)
+#=============================================================================
+
+# ส่งข้อความถึงผู้เล่นทุกคนเมื่อมีการลงขายหรือซื้อของ
+# ผู้เล่นสามารถปิดการรับข้อความได้ที่ /ah option
+
+broadcast:
+  sell:
+    enable: false
+    exclude-seller: true
+  purchase:
+    enable: false
+    exclude-buyer: true
+  # ข้อความที่กำหนดเองตามหมวดหมู่ (รูปแบบ MiniMessage)
+  # หากไอเทมอยู่ในหมวดหมู่ที่ระบุไว้ จะใช้ข้อความที่กำหนดเอง
+  # แทนข้อความเริ่มต้นใน messages.yml
+  # คีย์หมวดหมู่ต้องตรงกับ ID ที่กำหนดใน categories.yml
+  # placeholder ที่ใช้ได้: %seller%, %buyer%, %items%, %price%, %category%
+  #
+  # ตัวอย่าง:
+  #   category-messages:
+  #     sell:
+  #       weapons: "<red><bold>อาวุธ</bold></red> <white>%seller% <yellow>ลงขาย %items% <yellow>ในราคา <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>เกราะ</bold></blue> <white>%seller% <yellow>ลงขาย %items% <yellow>ในราคา <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>เอนแชนต์</bold></light_purple> <white>%seller% <yellow>ลงขาย %items% <yellow>ในราคา <gold>%price%<yellow>!"
+  #     purchase:
+  #       weapons: "<red><bold>อาวุธ</bold></red> <white>%buyer% <yellow>ซื้อ %items% <yellow>จาก <white>%seller% <yellow>ในราคา <gold>%price%<yellow>!"
+  #       armor: "<blue><bold>เกราะ</bold></blue> <white>%buyer% <yellow>ซื้อ %items% <yellow>จาก <white>%seller% <yellow>ในราคา <gold>%price%<yellow>!"
+  #       enchanted-books: "<light_purple><bold>เอนแชนต์</bold></light_purple> <white>%buyer% <yellow>ซื้อ %items% <yellow>จาก <white>%seller% <yellow>ในราคา <gold>%price%<yellow>!"
+  category-messages:
+    sell: {}
+    purchase: {}
+
+#=============================================================================
 # PERFORMANCE CONFIGURATION (การจูนประสิทธิภาพ)
 #=============================================================================
 

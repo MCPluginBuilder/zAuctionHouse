@@ -68,6 +68,7 @@ public class ZStorageManager extends ItemLoaderUtils implements StorageManager {
 
         MigrationManager.registerMigration(new CreateTransactionsMigration());
         MigrationManager.registerMigration(new CreateLogsMigration());
+        MigrationManager.registerMigration(new CreateOptionsMigration());
 
         this.repositories = new Repositories(plugin, this.databaseConnection);
         this.repositories.register(PlayerRepository.class);
@@ -75,6 +76,7 @@ public class ZStorageManager extends ItemLoaderUtils implements StorageManager {
         this.repositories.register(AuctionItemRepository.class);
         this.repositories.register(LogRepository.class);
         this.repositories.register(TransactionRepository.class);
+        this.repositories.register(OptionRepository.class);
 
         MigrationManager.execute(this.databaseConnection, sarahLogger);
 

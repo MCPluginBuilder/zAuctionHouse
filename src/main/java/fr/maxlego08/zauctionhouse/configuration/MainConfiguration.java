@@ -10,6 +10,7 @@ import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleArgumentConfi
 import fr.maxlego08.zauctionhouse.api.configuration.commands.SimpleCommandConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ActionConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.AutoClaimConfiguration;
+import fr.maxlego08.zauctionhouse.api.configuration.records.BroadcastConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.CooldownConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.ExpirationConfiguration;
 import fr.maxlego08.zauctionhouse.api.configuration.records.SalesNotificationConfiguration;
@@ -61,6 +62,7 @@ public class MainConfiguration extends YamlLoader implements Configuration {
     private PerformanceDebugConfiguration performanceDebugConfiguration;
     private AutoClaimConfiguration autoClaimConfiguration;
     private SalesNotificationConfiguration salesNotificationConfiguration;
+    private BroadcastConfiguration broadcastConfiguration;
     private PerformanceConfiguration performanceConfiguration;
     private SearchFilterConfiguration searchFilterConfiguration;
     private CooldownConfiguration cooldownConfiguration;
@@ -93,6 +95,7 @@ public class MainConfiguration extends YamlLoader implements Configuration {
         this.performanceDebugConfiguration = PerformanceDebugConfiguration.of(plugin, config);
         this.autoClaimConfiguration = AutoClaimConfiguration.of(plugin, config);
         this.salesNotificationConfiguration = SalesNotificationConfiguration.of(plugin, config);
+        this.broadcastConfiguration = BroadcastConfiguration.of(plugin, config);
         this.performanceConfiguration = PerformanceConfiguration.of(plugin, config);
         this.searchFilterConfiguration = SearchFilterConfiguration.of(plugin, config);
         this.cooldownConfiguration = CooldownConfiguration.of(plugin, config);
@@ -234,6 +237,11 @@ public class MainConfiguration extends YamlLoader implements Configuration {
     @Override
     public SalesNotificationConfiguration getSalesNotificationConfiguration() {
         return this.salesNotificationConfiguration;
+    }
+
+    @Override
+    public BroadcastConfiguration getBroadcast() {
+        return this.broadcastConfiguration;
     }
 
     @Override

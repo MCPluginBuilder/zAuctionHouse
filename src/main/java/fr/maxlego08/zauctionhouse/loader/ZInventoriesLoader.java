@@ -181,6 +181,9 @@ public class ZInventoriesLoader extends ZUtils implements InventoriesLoader {
         this.buttonManager.register(new NoneLoader(this.plugin, SearchButton.class, "ZAUCTIONHOUSE_SEARCH"));
         this.buttonManager.register(new NoneLoader(this.plugin, ClearSearchButton.class, "ZAUCTIONHOUSE_CLEAR_SEARCH"));
 
+        // Options
+        this.buttonManager.register(new OptionToggleLoader(this.plugin));
+
         // Shulker
         this.buttonManager.register(new NoneLoader(this.plugin, ShulkerOpenButton.class, "ZAUCTIONHOUSE_SHULKER_OPEN"));
         this.buttonManager.register(new ShulkerContentLoader(this.plugin));
@@ -225,7 +228,10 @@ public class ZInventoriesLoader extends ZUtils implements InventoriesLoader {
                 "confirms/purchase-inventory-confirm", "confirms/remove-inventory-confirm", //
 
                 // Shulker
-                "shulker-content" //
+                "shulker-content", //
+
+                // Options
+                "options" //
         );
     }
 
