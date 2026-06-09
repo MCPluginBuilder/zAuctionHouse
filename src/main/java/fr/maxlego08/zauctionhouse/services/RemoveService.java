@@ -232,7 +232,10 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
      */
     private CompletableFuture<Void> executeLocalRemovalStep(RemovalContext context, AuctionClusterBridge clusterBridge, PerformanceConfiguration config) {
 
-        return context.onLocalRemoval.get().thenCompose(v -> clusterBridge.removeItem(context.item, context.storageType, context.destinationStorageType).orTimeout(config.notifyItemActionTimeoutMs(), TimeUnit.MILLISECONDS));
+        return context.onLocalRemoval.get().thenCompose(v -> {
+            context.localRemovalCompleted = true;
+            return clusterBridge.removeItem(context.item, context.storageType, context.destinationStorageType).orTimeout(config.notifyItemActionTimeoutMs(), TimeUnit.MILLISECONDS);
+        });
     }
 
     /**
@@ -283,9 +286,11 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
 
     /**
      * Restores the item status on error if it was changed.
+     * If the local removal already completed (item given to player, DB updated),
+     * we must NOT restore the status as it would create a ghost item on other servers.
      */
     private void restoreStatusOnError(RemovalContext context, AuctionClusterBridge clusterBridge) {
-        if (context.statusChanged) {
+        if (context.statusChanged && !context.localRemovalCompleted) {
             context.item.setStatus(context.oldStatus);
             clusterBridge.notifyItemStatusChange(context.item, context.targetStatus, context.oldStatus);
         }
@@ -306,6 +311,7 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
 
         LockToken token;
         boolean statusChanged;
+        boolean localRemovalCompleted;
         RemoveResult result;
 
         RemovalContext(Item item, ItemStatus targetStatus, StorageType storageType, StorageType destinationStorageType, Runnable onUnavailable, Supplier<CompletableFuture<Void>> onLocalRemoval) {

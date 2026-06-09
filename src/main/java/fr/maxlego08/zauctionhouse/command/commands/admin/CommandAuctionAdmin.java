@@ -6,6 +6,8 @@ import fr.maxlego08.zauctionhouse.api.utils.Permission;
 import fr.maxlego08.zauctionhouse.api.command.CommandType;
 import fr.maxlego08.zauctionhouse.api.command.VCommand;
 import fr.maxlego08.zauctionhouse.command.commands.admin.cache.CommandAuctionAdminCache;
+import fr.maxlego08.zauctionhouse.command.commands.admin.logs.CommandAuctionAdminLogs;
+import fr.maxlego08.zauctionhouse.command.commands.admin.option.CommandAuctionAdminOption;
 
 public class CommandAuctionAdmin extends VCommand {
 
