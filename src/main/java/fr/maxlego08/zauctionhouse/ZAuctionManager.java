@@ -663,7 +663,7 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
             if (!available) {
                 this.plugin.getLogger().info("Item is not available");
                 inventoryManager.updateInventory(admin);
-                return failedFuture(new IllegalStateException("Item introuvable"));
+                return failedFuture(new IllegalStateException("Item indisponible"));
             }
 
             return clusterBridge.lockItem(item, admin.getUniqueId(), storageType);

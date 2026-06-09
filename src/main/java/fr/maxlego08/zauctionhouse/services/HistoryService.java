@@ -32,13 +32,14 @@ public class HistoryService extends AuctionService implements AuctionHistoryServ
         return CompletableFuture.supplyAsync(() -> {
 
             var logs = storageManager.selectSalesHistory(playerUniqueId);
-            var items = storageManager.selectItems(logs.stream().map(LogDTO::item_id).toList());
+            var validLogs = logs.stream().filter(e -> e.item_id() > 0).toList();
+            var items = storageManager.selectItems(validLogs.stream().map(LogDTO::item_id).toList());
 
             List<ItemLog> itemLogs = new ArrayList<>();
-            logs.forEach(dto -> {
+            for (var dto : validLogs) {
                 var optional = items.stream().filter(e -> e.getId() == dto.item_id()).findFirst();
-                optional.ifPresentOrElse(item -> itemLogs.add(new ItemLog(dto, item)), () -> plugin.getLogger().warning("Item not found for log ID: " + dto.id()));
-            });
+                optional.ifPresent(item -> itemLogs.add(new ItemLog(dto, item)));
+            }
 
             return itemLogs;
         }, this.plugin.getExecutorService());

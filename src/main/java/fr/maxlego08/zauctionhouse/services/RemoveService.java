@@ -201,7 +201,7 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
         if (!available) {
             context.onUnavailable.run();
             context.result = RemoveResult.failure("Item not available", RemoveFailReason.ITEM_NOT_AVAILABLE);
-            return failedFuture(new IllegalStateException("Item introuvable"));
+            return failedFuture(new IllegalStateException("Item indisponible"));
         }
 
         return clusterBridge.lockItem(context.item, player.getUniqueId(), context.storageType).orTimeout(config.lockItemTimeoutMs(), TimeUnit.MILLISECONDS);
@@ -254,6 +254,8 @@ public class RemoveService extends AuctionService implements AuctionRemoveServic
         // Log appropriately based on exception type
         if (throwable.getCause() instanceof TimeoutException) {
             logger.warning("Removal operation timed out for item " + context.item.getId());
+        } else if (throwable.getCause() instanceof IllegalStateException) {
+            logger.warning("Removal unavailable for item " + context.item.getId() + ": " + throwable.getMessage());
         } else {
             logger.severe("Error during removal for item " + context.item.getId() + ": " + throwable.getMessage());
         }
