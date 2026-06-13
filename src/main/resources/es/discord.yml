@@ -252,7 +252,7 @@ webhooks:
 #
 # PLACEHOLDERS DE TIEMPO:
 #   %created_at%           - Cuando se creo el listado
-#   %expires_at%           - Cuando expira el listado
+#   %expires_at%           - Cuando expira el listado (marca de tiempo dinamica de Discord, mostrada en la zona horaria de cada usuario)
 #   %remaining_time%       - Tiempo antes de la expiracion
 #   %timestamp%            - Marca de tiempo actual
 #

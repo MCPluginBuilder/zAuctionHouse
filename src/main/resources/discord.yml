@@ -252,7 +252,7 @@ webhooks:
 #
 # TIME PLACEHOLDERS:
 #   %created_at%           - When the listing was created
-#   %expires_at%           - When the listing expires
+#   %expires_at%           - When the listing expires (Discord dynamic timestamp, shown in each viewer's local timezone)
 #   %remaining_time%       - Time until expiration
 #   %timestamp%            - Current timestamp
 #

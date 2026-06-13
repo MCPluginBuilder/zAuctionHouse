@@ -252,7 +252,7 @@ webhooks:
 #
 # PLACEHOLDER เวลา:
 #   %created_at%           - เมื่อสร้างรายการลงขาย
-#   %expires_at%           - เมื่อรายการลงขายหมดอายุ
+#   %expires_at%           - เมื่อรายการลงขายหมดอายุ (Discord dynamic timestamp แสดงตามเขตเวลาของผู้ใช้แต่ละคน)
 #   %remaining_time%       - เวลาที่เหลือก่อนหมดอายุ
 #   %timestamp%            - Timestamp ปัจจุบัน
 #

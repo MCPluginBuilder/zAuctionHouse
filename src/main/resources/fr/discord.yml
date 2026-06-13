@@ -252,7 +252,7 @@ webhooks:
 #
 # PLACEHOLDERS DE TEMPS:
 #   %created_at%           - Quand l'annonce a été créée
-#   %expires_at%           - Quand l'annonce expire
+#   %expires_at%           - Quand l'annonce expire (horodatage dynamique Discord, affiche dans le fuseau horaire de chaque utilisateur)
 #   %remaining_time%       - Temps avant expiration
 #   %timestamp%            - Horodatage actuel
 #

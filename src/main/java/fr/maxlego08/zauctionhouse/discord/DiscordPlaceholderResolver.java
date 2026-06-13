@@ -158,7 +158,15 @@ public class DiscordPlaceholderResolver {
             return createdAt != null ? createdAt.toString() : "";
         });
 
-        placeholders.put("%expires_at%", auctionItem::getFormattedExpireDate);
+        placeholders.put("%expires_at%", () -> {
+            var expiredAt = auctionItem.getExpiredAt();
+            if (expiredAt == null || expiredAt.getTime() == 0) {
+                return auctionItem.getFormattedExpireDate();
+            }
+            // Discord dynamic timestamp: rendered by Discord in each viewer's local timezone (e.g. "12 June 2026 18:55").
+            // The value is in seconds since epoch, not milliseconds. The ":f" style is "short date/time".
+            return "<t:" + (expiredAt.getTime() / 1000L) + ":f>";
+        });
         placeholders.put("%remaining_time%", auctionItem::getRemainingTime);
         placeholders.put("%timestamp%", () -> Instant.now().toString());
     }

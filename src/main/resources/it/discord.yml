@@ -252,7 +252,7 @@ webhooks:
 #
 # PLACEHOLDER TEMPO:
 #   %created_at%           - Quando l'annuncio è stato creato
-#   %expires_at%           - Quando l'annuncio scade
+#   %expires_at%           - Quando l'annuncio scade (timestamp dinamico Discord, mostrato nel fuso orario di ogni utente)
 #   %remaining_time%       - Tempo prima della scadenza
 #   %timestamp%            - Timestamp attuale
 #
