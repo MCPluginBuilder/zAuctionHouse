@@ -57,10 +57,11 @@ public class ListedItemsButton extends PaginateButton {
         var slots = new ArrayList<>(getSlots());
         List<Item> pageItems = manager.resolveItemsForPage(StorageType.LISTED, itemIds, page, slots.size());
 
-        // 3. Display items directly
-        for (int i = 0; i < pageItems.size(); i++) {
-            Item item = pageItems.get(i);
-            int slot = slots.get(i);
+        // 3. Display items directly, skipping any item that is no longer displayable (e.g. expired via a stale cache)
+        int slotIndex = 0;
+        for (Item item : pageItems) {
+            if (!item.isActivelyListed()) continue;
+            int slot = slots.get(slotIndex++);
             var itemStack = item.buildItemStack(player);
             var button = inventoryEngine.addItem(isPlayerInventory(), slot, itemStack);
             if (button != null) {
@@ -95,7 +96,12 @@ public class ListedItemsButton extends PaginateButton {
 
         return event -> {
 
-            if (item.getStatus() != ItemStatus.AVAILABLE) {
+            // An item can still be AVAILABLE while its listing has already expired (expiration is processed lazily).
+            // Acting on such an item must never open a confirm inventory: move it to the expired list and refresh.
+            if (!item.isActivelyListed()) {
+                if (item.isExpired() && item.getStatus() != ItemStatus.REMOVED && item.getStatus() != ItemStatus.DELETED) {
+                    manager.getExpireService().processExpiredItem(item, StorageType.LISTED);
+                }
                 manager.clearPlayerCache(player, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_LISTED);
                 manager.updateInventory(player);
                 return;
@@ -276,7 +282,8 @@ public class ListedItemsButton extends PaginateButton {
             if (endIndex < itemIds.size()) {
                 int endItemId = itemIds.getInt(endIndex);
                 List<Item> resolved = manager.resolveItems(StorageType.LISTED, createSingleItemList(endItemId));
-                if (!resolved.isEmpty()) {
+                // Only pull the next item forward if it is still displayable (a stale cache may hand back an expired one)
+                if (!resolved.isEmpty() && resolved.getFirst().isActivelyListed()) {
                     itemToAddAtEnd = resolved.getFirst();
                 }
             }
@@ -328,6 +335,10 @@ public class ListedItemsButton extends PaginateButton {
      * @param player          the player whose inventory to update
      */
     private void processAdd(Item item, int itemIndex, int startIndex, List<Integer> slots, InventoryEngine inventoryEngine, Player player) {
+        // Defensive R1 chokepoint: never insert an item that should not be displayed (e.g. expired) into a viewer's GUI.
+        // This also neutralizes the re-add broadcast triggered when a confirm inventory is closed/back-clicked.
+        if (!item.isActivelyListed()) return;
+
         // Get the inventory and the items stored in it
         var spigotInventory = inventoryEngine.getSpigotInventory();
         var inventoryItems = inventoryEngine.getItems();

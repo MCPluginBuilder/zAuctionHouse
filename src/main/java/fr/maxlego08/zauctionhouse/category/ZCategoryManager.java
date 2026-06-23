@@ -256,19 +256,16 @@ public class ZCategoryManager implements CategoryManager {
         var manager = this.plugin.getAuctionManager();
         var items = manager.getItems(StorageType.LISTED);
 
-        long count;
-        if (categoryId.equals("all")) {
-            count = items.size();
-        } else {
-            // Optimized: use simple iteration instead of stream for better performance
-            int c = 0;
-            for (var item : items) {
-                if (item.hasCategory(categoryId)) {
-                    c++;
-                }
-            }
-            count = c;
+        // Only count items that are actually shown in the auction list: available for sale and not expired,
+        // so the count stays consistent with what the player sees when opening the category. We filter on the
+        // raw snapshot here (no getItemIds) to avoid mutating the category-count cache during its own computeIfAbsent.
+        boolean all = categoryId.equals("all");
+        int c = 0;
+        for (var item : items) {
+            if (!item.isActivelyListed()) continue;
+            if (all || item.hasCategory(categoryId)) c++;
         }
+        long count = c;
 
         performanceDebug.end("computeCategoryCount[" + categoryId + "]", startTime, "total=" + items.size() + ", count=" + count);
         return count;
