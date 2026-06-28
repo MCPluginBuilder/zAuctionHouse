@@ -107,7 +107,24 @@ public class PurchaseService extends AuctionService implements AuctionPurchaseSe
                     item.setStatus(ItemStatus.IS_BEING_PURCHASED);
                     return clusterBridge.notifyItemStatusChange(item, previousStatusHolder.get(), ItemStatus.IS_BEING_PURCHASED)
                             .orTimeout(performanceConfig.notifyStatusChangeTimeoutMs(), TimeUnit.MILLISECONDS)
-                            .thenCompose(v -> auctionEconomy.has(player.getUniqueId(), requiredBalance));
+                            // Authoritative re-validation UNDER LOCK before charging anything.
+                            // The in-memory item may be stale across servers; in particular, a
+                            // purchase that completed on another server but crashed before its SOLD
+                            // broadcast leaves a stale lock that lock recovery would let us re-acquire.
+                            // selectItem() returns null when the row is DELETED (give-item=true sold)
+                            // and a non-null item with a buyer set when it is PURCHASED
+                            // (give-item=false sold). Either case means the item is already sold:
+                            // abort cleanly, nothing has been withdrawn yet.
+                            .thenCompose(v -> this.plugin.getStorageManager().selectItem(item.getId())
+                                    .orTimeout(performanceConfig.checkAvailabilityTimeoutMs(), TimeUnit.MILLISECONDS))
+                            .thenCompose(dbItem -> {
+                                if (dbItem == null || dbItem.getBuyerUniqueId() != null) {
+                                    inventoryManager.updateInventory(player);
+                                    resultHolder.set(PurchaseResult.failure("Item already sold", PurchaseFailReason.ITEM_NOT_AVAILABLE));
+                                    return failedFuture(new IllegalStateException("Item already sold on another server"));
+                                }
+                                return auctionEconomy.has(player.getUniqueId(), requiredBalance);
+                            });
 
                 }).thenCompose(hasMoney -> {
 

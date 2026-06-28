@@ -215,6 +215,8 @@ items:
     type: ZAUCTIONHOUSE_SEARCH
     slot: 47
     is-permanent: true
+    # ค่าที่แสดงใน %search_query% เมื่อไม่มีการค้นหาที่ใช้งานอยู่
+    none-value: "ไม่มี"
     item:
       material: COMPASS
       name: "#2CCED2<bold>ค้นหา"

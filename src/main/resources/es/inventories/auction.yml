@@ -217,6 +217,8 @@ items:
     type: ZAUCTIONHOUSE_SEARCH
     slot: 47
     is-permanent: true
+    # Valor mostrado en %search_query% cuando no hay ninguna búsqueda activa.
+    none-value: "Ninguna"
     item:
       material: COMPASS
       name: "#2CCED2<bold>ʙᴜsᴄᴀʀ"

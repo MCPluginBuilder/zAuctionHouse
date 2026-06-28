@@ -71,6 +71,14 @@ public class ItemRepository extends Repository {
     private Consumer<Schema> createUpdateSchema(Item item, StorageType storageType) {
         return schema -> {
             schema.where("id", item.getId());
+            // Guard: an item may only transition INTO EXPIRED while it is still LISTED.
+            // The expiration path (ExpireService) is not cluster-aware, so without this a
+            // local expiration on one server could overwrite a row that another server
+            // already set to DELETED/PURCHASED (a sold item) and resurrect it for the
+            // seller -> duplication. With the guard the UPDATE matches 0 rows in that case.
+            if (storageType == StorageType.EXPIRED) {
+                schema.where("storage_type", StorageType.LISTED.name());
+            }
             schema.string("storage_type", storageType.name());
             if (storageType != StorageType.DELETED) {
                 schema.object("expired_at", item.getExpiredAt());
