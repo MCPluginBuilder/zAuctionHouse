@@ -15,9 +15,15 @@ import org.jspecify.annotations.NonNull;
 public class SearchButton extends Button {
 
     private final AuctionPlugin plugin;
+    private final String noneValue;
+    private final String activeValue;
+    private final String inactiveValue;
 
-    public SearchButton(AuctionPlugin plugin) {
+    public SearchButton(AuctionPlugin plugin, String noneValue, String activeValue, String inactiveValue) {
         this.plugin = plugin;
+        this.noneValue = noneValue;
+        this.activeValue = activeValue;
+        this.inactiveValue = inactiveValue;
     }
 
     @Override
@@ -31,8 +37,8 @@ public class SearchButton extends Button {
         String query = cache.get(PlayerCacheKey.SEARCH_QUERY);
         boolean hasActiveQuery = query != null && !query.isBlank();
 
-        placeholders.register("search_query", hasActiveQuery ? query : "None");
-        placeholders.register("search_active", hasActiveQuery ? "true" : "false");
+        placeholders.register("search_query", hasActiveQuery ? query : this.noneValue);
+        placeholders.register("search_active", hasActiveQuery ? this.activeValue : this.inactiveValue);
 
         return this.getItemStack().build(player, false, placeholders);
     }

@@ -3,6 +3,7 @@ package fr.maxlego08.zauctionhouse.services;
 import fr.maxlego08.zauctionhouse.api.AuctionManager;
 import fr.maxlego08.zauctionhouse.api.AuctionPlugin;
 import fr.maxlego08.zauctionhouse.api.cache.PlayerCacheKey;
+import fr.maxlego08.zauctionhouse.api.cluster.LockToken;
 import fr.maxlego08.zauctionhouse.api.event.events.AuctionExpireEvent;
 import fr.maxlego08.zauctionhouse.api.item.Item;
 import fr.maxlego08.zauctionhouse.api.item.ItemStatus;
@@ -11,8 +12,12 @@ import fr.maxlego08.zauctionhouse.api.services.AuctionExpireService;
 import org.bukkit.OfflinePlayer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -20,6 +25,10 @@ public class ExpireService implements AuctionExpireService {
 
     private final AuctionPlugin plugin;
     private final AuctionManager auctionManager;
+    // Coalesces concurrent cluster-aware expiration dispatches for the same item id, so a seller
+    // spamming their selling tab cannot trigger a stampede of redundant Redis round-trips while
+    // one expiration is already in flight for that item.
+    private final Set<Integer> expiringItemIds = ConcurrentHashMap.newKeySet();
 
     public ExpireService(AuctionPlugin plugin, AuctionManager auctionManager) {
         this.plugin = plugin;
@@ -32,6 +41,15 @@ public class ExpireService implements AuctionExpireService {
         // Guard: skip items already processed by another server (e.g., claimed via Redis cluster)
         if (item.getStatus() == ItemStatus.DELETED) {
             this.auctionManager.removeItem(storageType, item);
+            return;
+        }
+
+        // Multi-server: route LISTED -> EXPIRED through a cluster-aware path that locks the item,
+        // re-validates authoritative DB state (skipping items sold on another server), performs
+        // the move, then broadcasts it so other nodes converge. Prevents a sold item from being
+        // resurrected as EXPIRED for the seller (duplication). Single-server keeps the fast path.
+        if (storageType == StorageType.LISTED && this.plugin.getAuctionClusterBridge().isDistributed()) {
+            expireListedItemClustered(item);
             return;
         }
 
@@ -107,6 +125,14 @@ public class ExpireService implements AuctionExpireService {
             }
         }
         if (filtered.isEmpty()) return;
+
+        // Multi-server: route LISTED -> EXPIRED through the cluster-aware per-item path.
+        if (storageType == StorageType.LISTED && this.plugin.getAuctionClusterBridge().isDistributed()) {
+            for (Item item : filtered) {
+                expireListedItemClustered(item);
+            }
+            return;
+        }
 
         var configuration = this.plugin.getConfiguration();
         var storageManager = this.plugin.getStorageManager();
@@ -209,5 +235,143 @@ public class ExpireService implements AuctionExpireService {
             batchUpdate.put(StorageType.DELETED, validItems);
             storageManager.updateItems(batchUpdate);
         }
+    }
+
+    /**
+     * Cluster-aware LISTED -> EXPIRED transition used in multi-server (distributed) setups.
+     * <p>
+     * Sequence: check availability -> acquire the cluster lock -> re-read authoritative DB state
+     * -> if the item was sold/deleted on another server, drop the local ghost and skip; otherwise
+     * perform the local move + DB update, then broadcast the removal (source=LISTED,
+     * destination=EXPIRED) so other nodes converge -> release the lock.
+     * <p>
+     * Holding the lock across the whole operation serializes expiration against purchases and
+     * against expiration on other nodes, so a sold item can never be resurrected as EXPIRED for
+     * the seller. Items being purchased (cluster state LOCKED) or already handled by another node
+     * are skipped silently and re-evaluated on a later sweep.
+     */
+    private void expireListedItemClustered(Item item) {
+        // Coalesce concurrent dispatches for the same item id (see expiringItemIds). If an
+        // expiration is already in flight, skip; it will be re-evaluated on a later sweep if needed.
+        if (!this.expiringItemIds.add(item.getId())) {
+            return;
+        }
+        var clusterBridge = this.plugin.getAuctionClusterBridge();
+        var perf = this.plugin.getConfiguration().getPerformance();
+        var storageManager = this.plugin.getStorageManager();
+        var logger = this.plugin.getLogger();
+        var tokenHolder = new AtomicReference<LockToken>();
+
+        clusterBridge.checkAvailability(item)
+                .orTimeout(perf.checkAvailabilityTimeoutMs(), TimeUnit.MILLISECONDS)
+                .thenCompose(available -> {
+                    if (!available) {
+                        // Item is locked (being purchased) on the cluster: do not expire now.
+                        return CompletableFuture.<Void>completedFuture(null);
+                    }
+                    return clusterBridge.lockItem(item, item.getSellerUniqueId(), StorageType.LISTED)
+                            .orTimeout(perf.lockItemTimeoutMs(), TimeUnit.MILLISECONDS)
+                            .thenCompose(token -> {
+                                tokenHolder.set(token);
+                                if (LockToken.noop().value().equals(token.value())) {
+                                    // Another server is already processing this item.
+                                    return CompletableFuture.<Void>completedFuture(null);
+                                }
+                                return storageManager.selectItem(item.getId())
+                                        .orTimeout(perf.checkAvailabilityTimeoutMs(), TimeUnit.MILLISECONDS)
+                                        .thenCompose(dbItem -> {
+                                            if (dbItem == null || dbItem.getBuyerUniqueId() != null) {
+                                                // Sold/deleted on another server: remove the local ghost, do NOT expire.
+                                                this.plugin.getScheduler().runNextTick(w -> {
+                                                    this.auctionManager.removeItem(StorageType.LISTED, item.getId());
+                                                    this.auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_SEARCH);
+                                                });
+                                                return CompletableFuture.<Void>completedFuture(null);
+                                            }
+                                            // Genuinely still listed: perform the move locally, then broadcast.
+                                            return performListedToExpired(item)
+                                                    .thenCompose(v -> clusterBridge.removeItem(item, StorageType.LISTED, StorageType.EXPIRED)
+                                                            .orTimeout(perf.notifyItemActionTimeoutMs(), TimeUnit.MILLISECONDS));
+                                        });
+                            });
+                })
+                .whenComplete((v, throwable) -> {
+                    this.expiringItemIds.remove(item.getId());
+                    if (throwable != null) {
+                        logger.warning("Cluster-aware expiration skipped/failed for item " + item.getId() + ": " + throwable.getMessage());
+                    }
+                    var token = tokenHolder.get();
+                    if (token != null && !LockToken.noop().value().equals(token.value())) {
+                        clusterBridge.unlockItem(item, token, StorageType.LISTED).exceptionally(ex -> {
+                            logger.severe("Failed to unlock item " + item.getId() + " after expiration: " + ex.getMessage());
+                            return null;
+                        });
+                    }
+                });
+    }
+
+    /**
+     * Performs the local LISTED -> EXPIRED move (fire event, clear caches, compute expiration,
+     * mutate the item, update the in-memory stores and the database). Returns a future that
+     * completes only after the database row has been updated, so the caller can keep the cluster
+     * lock held until the change is durable.
+     */
+    private CompletableFuture<Void> performListedToExpired(Item item) {
+        var configuration = this.plugin.getConfiguration();
+        var storageManager = this.plugin.getStorageManager();
+        var offlineSeller = item.getSeller();
+
+        this.plugin.getScheduler().runNextTick(w -> {
+            var event = new AuctionExpireEvent(List.of(item), StorageType.LISTED);
+            event.callEvent();
+            this.auctionManager.clearPlayersCache(PlayerCacheKey.ITEMS_LISTED, PlayerCacheKey.ITEMS_SEARCH);
+            if (offlineSeller.isOnline()) {
+                var sellerPlayer = offlineSeller.getPlayer();
+                if (sellerPlayer != null) {
+                    this.auctionManager.clearPlayerCache(sellerPlayer, PlayerCacheKey.ITEMS_SELLING, PlayerCacheKey.ITEMS_EXPIRED);
+                }
+            }
+        });
+
+        CompletableFuture<Long> expirationFuture;
+        var onlinePlayer = offlineSeller.isOnline() ? offlineSeller.getPlayer() : null;
+        if (onlinePlayer != null) {
+            expirationFuture = CompletableFuture.completedFuture(configuration.getExpireExpiration().getExpiration(onlinePlayer));
+        } else {
+            expirationFuture = configuration.getExpireExpiration().getExpiration(this.plugin.getOfflinePermission(), offlineSeller)
+                    .thenApply(expiration -> expiration != null ? expiration : configuration.getExpireExpiration().defaultExpiration())
+                    .exceptionally(throwable -> {
+                        this.plugin.getLogger().log(Level.WARNING, "Cannot compute expiration for offline player " + offlineSeller.getName(), throwable);
+                        return configuration.getExpireExpiration().defaultExpiration();
+                    });
+        }
+
+        return expirationFuture.thenCompose(expiration -> {
+            long expiredAt = expiration > 0 ? System.currentTimeMillis() + (expiration * 1000) : 0;
+            CompletableFuture<Void> done = new CompletableFuture<>();
+            this.plugin.getScheduler().runNextTick(w -> {
+                var previousExpiredAt = item.getExpiredAt();
+                item.setExpiredAt(new Date(expiredAt));
+                storageManager.updateItem(item, StorageType.EXPIRED).whenComplete((u, t) -> {
+                    if (t != null) {
+                        // DB update failed: revert the expiredAt change and leave the item in the
+                        // LISTED store unchanged so a later sweep retries. Never create a local
+                        // EXPIRED phantom against a still-LISTED database row.
+                        item.setExpiredAt(previousExpiredAt);
+                        done.completeExceptionally(t);
+                        return;
+                    }
+                    // DB row is now EXPIRED: apply the in-memory move on the main thread, only once
+                    // the change is durable.
+                    this.plugin.getScheduler().runNextTick(w2 -> {
+                        item.setStatus(ItemStatus.REMOVED);
+                        this.auctionManager.removeItem(StorageType.LISTED, item);
+                        this.auctionManager.addItem(StorageType.EXPIRED, item);
+                        done.complete(null);
+                    });
+                });
+            });
+            return done;
+        });
     }
 }

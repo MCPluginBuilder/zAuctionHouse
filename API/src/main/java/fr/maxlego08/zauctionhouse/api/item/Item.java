@@ -172,6 +172,17 @@ public interface Item {
     boolean isExpired();
 
     /**
+     * Indicates whether the item is currently live in the auction listings: available for sale and not expired.
+     * This is the single predicate shared by every display chokepoint (main list rendering, incremental updates,
+     * category counts, placeholders) so that an expired item is never shown nor counted, even while a cache is stale.
+     *
+     * @return {@code true} if the item should be displayed/counted in the auction list
+     */
+    default boolean isActivelyListed() {
+        return getStatus() == ItemStatus.AVAILABLE && !isExpired();
+    }
+
+    /**
      * @return current lifecycle status of the item
      */
     ItemStatus getStatus();

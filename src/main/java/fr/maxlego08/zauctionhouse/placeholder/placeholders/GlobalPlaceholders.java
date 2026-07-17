@@ -13,7 +13,11 @@ public class GlobalPlaceholders implements PlaceholderRegister {
         var manager = plugin.getAuctionManager();
         var categoryManager = plugin.getCategoryManager();
 
-        placeholder.register("listed_items", player -> String.valueOf(manager.getItems(StorageType.LISTED).size()), "Returns the number of listed items");
+        // Count only items actually shown in the auction list (available for sale and not expired),
+        // so the placeholder stays consistent with the GUI list and the category counts.
+        placeholder.register("listed_items", player -> String.valueOf(manager.getItems(StorageType.LISTED).stream()
+                .filter(item -> item.isActivelyListed())
+                .count()), "Returns the number of listed items");
 
         placeholder.register("category_count_", (player, args) -> {
             if (args == null || args.isEmpty()) {

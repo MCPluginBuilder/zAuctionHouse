@@ -780,7 +780,12 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         final String sellerName = resolvedSellerName;
 
         // On retire l'argent de l'acheteur
-        auctionEconomy.withdraw(player.getUniqueId(), buyerPays, args(auctionEconomy.getWithdrawReason(), "%seller%", sellerName, "%items%", items));
+        try {
+            auctionEconomy.withdraw(player.getUniqueId(), buyerPays, args(auctionEconomy.getWithdrawReason(), "%seller%", sellerName, "%items%", items));
+        } catch (Exception e) {
+            this.plugin.getLogger().severe("Failed to withdraw " + buyerPays + " from buyer " + player.getName() + " for item " + auctionItem.getId() + ": " + e.getMessage());
+            throw new RuntimeException("Failed to withdraw buyer payment", e);
+        }
 
         // On donne l'argent au vendeur
         TransactionStatus transactionStatus;
@@ -796,12 +801,23 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         } else {
 
             transactionStatus = TransactionStatus.RETRIEVED;
-            auctionEconomy.deposit(seller.getUniqueId(), sellerReceives, args(auctionEconomy.getDepositReason(), "%buyer%", player.getName(), "%items%", items));
+            try {
+                auctionEconomy.deposit(seller.getUniqueId(), sellerReceives, args(auctionEconomy.getDepositReason(), "%buyer%", player.getName(), "%items%", items));
+            } catch (Exception e) {
+                this.plugin.getLogger().severe("Failed to deposit " + sellerReceives + " to seller " + auctionItem.getSellerName() + " for item " + auctionItem.getId() + ": " + e.getMessage());
+                try {
+                    auctionEconomy.deposit(player.getUniqueId(), buyerPays, args(auctionEconomy.getDepositReason(), "%buyer%", player.getName(), "%items%", items));
+                } catch (Exception refundEx) {
+                    this.plugin.getLogger().severe("CRITICAL: Buyer refund failed after seller deposit failure: " + refundEx.getMessage());
+                }
+                throw new RuntimeException("Failed to deposit seller payment", e);
+            }
         }
 
         // Créer les transactions avec gestion d'erreur
         final BigDecimal finalBuyerPays = buyerPays;
         final BigDecimal finalSellerReceives = sellerReceives;
+        final boolean deferred = deferDeposit;
         auctionEconomy.get(player.getUniqueId()).thenAccept(buyerBalance -> {
             storageManager.createTransaction(auctionItem, player.getUniqueId(), economyName, buyerBalance.add(finalBuyerPays), buyerBalance, finalBuyerPays.negate(), TransactionStatus.RETRIEVED);
         }).exceptionally(throwable -> {
@@ -810,7 +826,8 @@ public class ZAuctionManager extends ZUtils implements AuctionManager {
         });
 
         auctionEconomy.get(seller.getUniqueId()).thenAccept(sellerBalance -> {
-            storageManager.createTransaction(auctionItem, seller.getUniqueId(), economyName, sellerBalance.subtract(finalSellerReceives), sellerBalance, finalSellerReceives, transactionStatus);
+            var beforeBalance = deferred ? sellerBalance : sellerBalance.subtract(finalSellerReceives);
+            storageManager.createTransaction(auctionItem, seller.getUniqueId(), economyName, beforeBalance, sellerBalance, finalSellerReceives, transactionStatus);
         }).exceptionally(throwable -> {
             this.plugin.getLogger().severe("Failed to create seller transaction for item " + auctionItem.getId() + ": " + throwable.getMessage());
             return null;

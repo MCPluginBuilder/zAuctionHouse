@@ -17,7 +17,8 @@ include("API")
 
 // Hooks that require a gradle.properties flag to be enabled
 val conditionalHooks = mapOf(
-    "ZelAuction" to "hooks.zelauction"
+    "ZelAuction" to "hooks.zelauction",
+    "DonutAuction" to "hooks.donutauction"
 )
 
 file("Hooks").listFiles()?.forEach { file ->
